@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Difficulty</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+        #description {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.5;
+        }
+        #back {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #back:hover {
+            background-color: #5a6268;
+        }
+        .material-icons {
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="header"></h1>
+        <div class="buttons">
+            <button id="easyButton" onclick="selectDifficulty('easy')"></button>
+            <button id="mediumButton" onclick="selectDifficulty('medium')"></button>
+            <button id="hardButton" onclick="selectDifficulty('hard')"></button>
+        </div>
+        <p id="description"></p>
+        <button id="back" onclick="restartGame()">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </button>
+    </div>
+    <script>
+        function back() {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('back').addEventListener('click', back);
+
+        const translations = {
+            en: { 
+                easy: 'Easy', medium: 'Medium', hard: 'Hard', header: 'Select Difficulty',
+                description: 'Logic games are more than just fun—they are the ultimate gym for your brain. Engaging in these games helps boost your cognitive abilities, enhance problem-solving skills, and unlock your potential. It\'s a journey that trains your mind to think creatively and strategically. Are you ready to challenge your brain and have fun doing it?'
+            },
+            fr: { 
+                easy: 'Facile', medium: 'Moyen', hard: 'Difficile', header: 'Choisir la difficulté',
+                description: 'Les jeux de logique sont bien plus qu\'un simple divertissement—ils sont la salle de sport ultime pour votre cerveau. S\'engager dans ces jeux aide à stimuler vos capacités cognitives, à améliorer vos compétences en résolution de problèmes, et à libérer votre potentiel. C’est un voyage qui entraîne votre esprit à penser de manière créative et stratégique. Êtes-vous prêt à relever le défi et à vous amuser en même temps ?'
+            },
+            es: { 
+                easy: 'Fácil', medium: 'Medio', hard: 'Difícil', header: 'Seleccionar dificultad',
+                description: 'Los juegos de lógica son más que diversión: son el gimnasio definitivo para tu cerebro. Participar en estos juegos ayuda a mejorar tus habilidades cognitivas, a resolver problemas y a desbloquear tu potencial. Es un viaje que entrena tu mente para pensar de forma creativa y estratégica. ¿Estás listo para desafiar tu cerebro y divertirte haciéndolo?'
+            },
+            de: { 
+                easy: 'Einfach', medium: 'Mittel', hard: 'Schwierig', header: 'Schwierigkeit wählen',
+                description: 'Logikspiele sind mehr als nur Spaß – sie sind das ultimative Fitnessstudio für Ihr Gehirn. Sich auf diese Spiele einzulassen, hilft, Ihre kognitiven Fähigkeiten zu verbessern, Problemlösungsfähigkeiten zu steigern und Ihr Potenzial freizusetzen. Es ist eine Reise, die Ihren Geist trainiert, kreativ und strategisch zu denken. Sind Sie bereit, Ihr Gehirn herauszufordern und Spaß dabei zu haben?'
+            },
+            it: { 
+                easy: 'Facile', medium: 'Medio', hard: 'Difficile', header: 'Seleziona difficoltà',
+                description: 'I giochi di logica sono più che divertimento: sono la palestra definitiva per il tuo cervello. Partecipare a questi giochi aiuta a potenziare le tue abilità cognitive, migliorare la risoluzione dei problemi e sbloccare il tuo potenziale. È un viaggio che allena la tua mente a pensare in modo creativo e strategico. Sei pronto a sfidare il tuo cervello e divertirti nel farlo?'
+            },
+            pt: { 
+                easy: 'Fácil', medium: 'Médio', hard: 'Difícil', header: 'Escolha a dificuldade',
+                description: 'Os jogos de lógica são mais do que diversão – são a academia definitiva para o seu cérebro. Engajar-se nesses jogos ajuda a aumentar suas habilidades cognitivas, aprimorar suas habilidades de resolução de problemas e liberar seu potencial. É uma jornada que treina sua mente a pensar de forma criativa e estratégica. Você está pronto para desafiar seu cérebro e se divertir fazendo isso?'
+            },
+            ru: { 
+                easy: 'Легкий', medium: 'Средний', hard: 'Сложный', header: 'Выберите сложность',
+                description: 'Логические игры – это не просто веселье, это настоящий тренажерный зал для вашего мозга. Участие в этих играх помогает развивать когнитивные способности, улучшать навыки решения проблем и раскрывать ваш потенциал. Это путешествие, которое тренирует ваш ум думать творчески и стратегически. Готовы ли вы бросить вызов своему мозгу и при этом получить удовольствие?'
+            },
+            zh: { 
+                easy: '简单', medium: '中等', hard: '困难', header: '选择难度',
+                description: '逻辑游戏不仅仅是娱乐，它们是你大脑的终极健身房。参与这些游戏有助于提高你的认知能力，增强解决问题的技能，并激发你的潜能。这是一段训练你的思维以创造性和策略性思考的旅程。你准备好挑战你的大脑并在过程中享受乐趣了吗？'
+            },
+            ja: { 
+                easy: '簡単', medium: '普通', hard: '難しい', header: '難易度を選択してください',
+                description: '論理ゲームは単なる娯楽以上のものです。それはあなたの脳の究極のジムです。これらのゲームに参加することで、認知能力を高め、問題解決能力を向上させ、潜在能力を引き出すことができます。それは、創造的かつ戦略的に考えるためにあなたの心を訓練する旅です。脳に挑戦して、楽しみながらそれをやる準備はできましたか？'
+            },
+            ar: { 
+                easy: 'سهل', medium: 'متوسط', hard: 'صعب', header: 'اختر مستوى الصعوبة',
+                description: 'ألعاب المنطق ليست مجرد متعة - إنها الصالة الرياضية النهائية لعقلك. يساعد الانخراط في هذه الألعاب على تعزيز قدراتك الإدراكية وتحسين مهارات حل المشكلات وإطلاق إمكاناتك. إنها رحلة تدرب عقلك على التفكير بطريقة إبداعية واستراتيجية. هل أنت مستعد لتحدي عقلك والاستمتاع في الوقت نفسه؟'
+            }
+        };
+
+        function selectDifficulty(difficulty) {
+    localStorage.setItem('difficulty', difficulty);
+    if (difficulty === 'easy') {
+        window.location.href = 'game.html';
+    } else if (difficulty === 'medium') {
+        window.location.href = 'game_medium.html';
+    } else if (difficulty === 'hard') {
+        window.location.href = 'game_hard.html';
+    }
+}
+
+        const lang = localStorage.getItem('language') || 'en';
+        document.getElementById('header').innerText = translations[lang].header;
+        document.getElementById('easyButton').innerText = translations[lang].easy;
+        document.getElementById('mediumButton').innerText = translations[lang].medium;
+        document.getElementById('hardButton').innerText = translations[lang].hard;
+        document.getElementById('description').innerText = translations[lang].description;
+    </script>
+</body>
+</html>

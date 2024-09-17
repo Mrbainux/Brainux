@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Game</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <style>
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="gameTitle"></h1>
+        <div id="game-container" style="display: none;">
+            <div id="question-container">
+                <p id="question"></p>
+                <div id="options"></div>
+            </div>
+            <div id="feedback"></div>
+            <div id="score-container" style="display: none;">
+                <p id="score-text"></p>
+                <p id="correct-answers-text"></p>
+                <p id="incorrect-answers-text"></p>
+                
+				<button id="back-to-difficulty"></button> 
+				 <button id="restart-game" onclick="restartGame()">
+				 <i class="fas fa-redo"></i> 
+				 <span class="material-icons"></span> </button>
+            </div>
+        </div>
+ <button id="backk" onclick="backk()">
+				 <i class="fas fa-arrow-left"></i>
+				 <span class="material-icons"></span> </button>
+    </div>
+	
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+    <script>
+	function backToDifficulty() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+
+function backk() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+document.getElementById('back-to-difficulty').addEventListener('click', backToDifficulty);
+ document.getElementById('restart-game').addEventListener('click', restartGame);
+const translations = {
+    en: { 
+        gameTitle: 'Logic Game',
+        question: 'Question',
+        correct: 'Correct!',
+        incorrect: 'Incorrect!',
+        score: 'Your Score',
+        correctAnswers: 'Correct Answers',
+        incorrectAnswers: 'Incorrect Answers',
+        restartGame: 'Restart Game',
+        backToDifficulty: 'Back to Difficulty',
+        questions: [
+         { q: 'What is 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: 'What is 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Which number is larger: 7 or 5?', o: ['7', '5', 'They are equal'], a: 0 },
+    { q: 'What is 3 x 3?', o: ['6', '8', '9'], a: 2 },
+    { q: 'What is the next number in the sequence: 1, 3, 5, 7?', o: ['8', '9', '10'], a: 1 },
+    { q: 'How many sides does a triangle have?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Which is heavier: a kilogram of feathers or a kilogram of stones?', o: ['Feathers', 'Stones', 'They are the same'], a: 2 },
+    { q: 'What is the capital of Italy?', o: ['Rome', 'Paris', 'Berlin'], a: 0 },
+    { q: 'How many months are there in a year?', o: ['10', '12', '14'], a: 1 },
+    { q: 'What is the color of the sun?', o: ['Red', 'Yellow', 'Green'], a: 1 },
+    { q: 'If you have 3 apples and take 2, how many apples do you have?', o: ['2', '3', '1'], a: 0 },
+    { q: 'What shape has four equal sides?', o: ['Triangle', 'Rectangle', 'Square'], a: 2 },
+    { q: 'Which is colder: ice or boiling water?', o: ['Ice', 'Boiling Water', 'They are the same'], a: 0 },
+    { q: 'What is the opposite of night?', o: ['Day', 'Evening', 'Morning'], a: 0 },
+    { q: 'What is the third month of the year?', o: ['January', 'February', 'March'], a: 2 },
+    { q: 'How many legs does a spider have?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Which is faster: a car or a bicycle?', o: ['Car', 'Bicycle', 'They are the same'], a: 0 },
+    { q: 'What is 100 divided by 10?', o: ['10', '20', '30'], a: 0 },
+    { q: 'What comes after Monday?', o: ['Tuesday', 'Wednesday', 'Sunday'], a: 0 },
+    { q: 'How many days are there in a week?', o: ['5', '7', '10'], a: 1 },
+    { q: 'What is the color of the sky on a clear day?', o: ['Blue', 'Gray', 'Red'], a: 0 },
+    { q: 'If you drop a ball, what will it do?', o: ['Float', 'Sink', 'Fall'], a: 2 },
+    { q: 'What is the name of the place where you sleep?', o: ['Kitchen', 'Bathroom', 'Bedroom'], a: 2 },
+    { q: 'How many continents are there on Earth?', o: ['5', '6', '7'], a: 2 },
+    { q: 'What is the main ingredient in bread?', o: ['Rice', 'Flour', 'Sugar'], a: 1 },
+    { q: 'What do you use to write?', o: ['Pen', 'Fork', 'Spoon'], a: 0 },
+    { q: 'What animal says "moo"?', o: ['Cat', 'Dog', 'Cow'], a: 2 },
+    { q: 'What is the name of our planet?', o: ['Mars', 'Earth', 'Jupiter'], a: 1 },
+    { q: 'What is the opposite of big?', o: ['Small', 'Tall', 'Wide'], a: 0 },
+    { q: 'How many colors are there in a rainbow?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Which fruit is yellow and curved?', o: ['Apple', 'Banana', 'Grape'], a: 1 },
+    { q: 'What is the name of the season after summer?', o: ['Autumn', 'Spring', 'Winter'], a: 0 },
+    { q: 'What shape is a ball?', o: ['Square', 'Circle', 'Triangle'], a: 1 },
+    { q: 'What do you use to eat soup?', o: ['Fork', 'Knife', 'Spoon'], a: 2 },
+    { q: 'What is the currency of the USA?', o: ['Dollar', 'Euro', 'Pound'], a: 0 },
+        ]
+    },
+    fr: { 
+        gameTitle: 'Jeu de Logique',
+        question: 'Question',
+        correct: 'Correct !',
+        incorrect: 'Incorrect !',
+        score: 'Votre Score',
+        correctAnswers: 'Réponses Correctes',
+        incorrectAnswers: 'Réponses Incorrectes',
+        restartGame: 'Recommencer le Jeu',
+        backToDifficulty: 'Retour à la Difficulté',
+        questions: [
+            { q: 'Quel est 2 + 3 ?', o: ['4', '5', '6'], a: 1 },
+    { q: 'Quel est 10 - 4 ?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Quel nombre est plus grand : 7 ou 5 ?', o: ['7', '5', 'Ils sont égaux'], a: 0 },
+    { q: 'Quel est 3 x 3 ?', o: ['6', '8', '9'], a: 2 },
+    { q: 'Quel est le nombre suivant dans la séquence : 1, 3, 5, 7 ?', o: ['8', '9', '10'], a: 1 },
+    { q: 'Combien de côtés a un triangle ?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Quel est plus lourd : un kilogramme de plumes ou un kilogramme de pierres ?', o: ['Plumes', 'Pierres', 'Ils sont identiques'], a: 2 },
+    { q: 'Quelle est la capitale de l\'Italie ?', o: ['Rome', 'Paris', 'Berlin'], a: 0 },
+    { q: 'Combien de mois y a-t-il dans une année ?', o: ['10', '12', '14'], a: 1 },
+    { q: 'Quelle est la couleur du soleil ?', o: ['Rouge', 'Jaune', 'Vert'], a: 1 },
+    { q: 'Si vous avez 3 pommes et en prenez 2, combien de pommes avez-vous ?', o: ['2', '3', '1'], a: 0 },
+    { q: 'Quelle forme a quatre côtés égaux ?', o: ['Triangle', 'Rectangle', 'Carré'], a: 2 },
+    { q: 'Quel est plus froid : la glace ou l\'eau bouillante ?', o: ['Glace', 'Eau Bouillante', 'Ils sont identiques'], a: 0 },
+    { q: 'Quel est l\'opposé de la nuit ?', o: ['Jour', 'Soir', 'Matin'], a: 0 },
+    { q: 'Quel est le troisième mois de l\'année ?', o: ['Janvier', 'Février', 'Mars'], a: 2 },
+    { q: 'Combien de pattes a une araignée ?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Quel est plus rapide : une voiture ou une bicyclette ?', o: ['Voiture', 'Bicyclette', 'Ils sont identiques'], a: 0 },
+    { q: 'Quel est 100 divisé par 10 ?', o: ['10', '20', '30'], a: 0 },
+    { q: 'Quel vient après lundi ?', o: ['Mardi', 'Mercredi', 'Dimanche'], a: 0 },
+    { q: 'Combien de jours y a-t-il dans une semaine ?', o: ['5', '7', '10'], a: 1 },
+    { q: 'Quelle est la couleur du ciel par temps clair ?', o: ['Bleu', 'Gris', 'Rouge'], a: 0 },
+    { q: 'Si vous lâchez une balle, que fera-t-elle ?', o: ['Flotter', 'Couler', 'Tomber'], a: 2 },
+    { q: 'Quel est le nom de l\'endroit où vous dormez ?', o: ['Cuisine', 'Salle de Bain', 'Chambre'], a: 2 },
+    { q: 'Combien de continents y a-t-il sur Terre ?', o: ['5', '6', '7'], a: 2 },
+    { q: 'Quel est l\'ingrédient principal du pain ?', o: ['Riz', 'Farine', 'Sucre'], a: 1 },
+    { q: 'Que utilisez-vous pour écrire ?', o: ['Stylo', 'Fourchette', 'Cuillère'], a: 0 },
+    { q: 'Quel animal dit "meuh" ?', o: ['Chat', 'Chien', 'Vache'], a: 2 },
+    { q: 'Quel est le nom de notre planète ?', o: ['Mars', 'Terre', 'Jupiter'], a: 1 },
+    { q: 'Quel est l\'opposé de grand ?', o: ['Petit', 'Grand', 'Large'], a: 0 },
+    { q: 'Combien de couleurs y a-t-il dans un arc-en-ciel ?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Quel fruit est jaune et courbé ?', o: ['Pomme', 'Banane', 'Raisin'], a: 1 },
+    { q: 'Quelle est la saison après l\'été ?', o: ['Automne', 'Printemps', 'Hiver'], a: 0 },
+    { q: 'Quelle forme a une balle ?', o: ['Carré', 'Cercle', 'Triangle'], a: 1 },
+    { q: 'Que utilisez-vous pour manger de la soupe ?', o: ['Fourchette', 'Couteau', 'Cuillère'], a: 2 },
+    { q: 'Quelle est la monnaie des États-Unis ?', o: ['Dollar', 'Euro', 'Livre'], a: 0 },
+        ]
+    },
+    es: {
+        gameTitle: 'Juego de Lógica',
+        question: 'Pregunta',
+        correct: '¡Correcto!',
+        incorrect: '¡Incorrecto!',
+        score: 'Tu Puntaje',
+        correctAnswers: 'Respuestas Correctas',
+        incorrectAnswers: 'Respuestas Incorrectas',
+        restartGame: 'Reiniciar Juego',
+        backToDifficulty: 'Volver a la Dificultad',
+        questions: [
+              { q: '¿Cuánto es 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: '¿Cuánto es 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: '¿Cuál número es mayor: 7 o 5?', o: ['7', '5', 'Son iguales'], a: 0 },
+    { q: '¿Cuánto es 3 x 3?', o: ['6', '8', '9'], a: 2 },
+    { q: '¿Cuál es el siguiente número en la secuencia: 1, 3, 5, 7?', o: ['8', '9', '10'], a: 1 },
+    { q: '¿Cuántos lados tiene un triángulo?', o: ['3', '4', '5'], a: 0 },
+    { q: '¿Qué es más pesado: un kilogramo de plumas o un kilogramo de piedras?', o: ['Plumas', 'Piedras', 'Son iguales'], a: 2 },
+    { q: '¿Cuál es la capital de Italia?', o: ['Roma', 'París', 'Berlín'], a: 0 },
+    { q: '¿Cuántos meses hay en un año?', o: ['10', '12', '14'], a: 1 },
+    { q: '¿Cuál es el color del sol?', o: ['Rojo', 'Amarillo', 'Verde'], a: 1 },
+    { q: 'Si tienes 3 manzanas y tomas 2, ¿cuántas manzanas tienes?', o: ['2', '3', '1'], a: 0 },
+    { q: '¿Qué forma tiene cuatro lados iguales?', o: ['Triángulo', 'Rectángulo', 'Cuadrado'], a: 2 },
+    { q: '¿Qué es más frío: el hielo o el agua hirviendo?', o: ['Hielo', 'Agua Hirviendo', 'Son iguales'], a: 0 },
+    { q: '¿Cuál es el opuesto de la noche?', o: ['Día', 'Noche', 'Mañana'], a: 0 },
+    { q: '¿Cuál es el tercer mes del año?', o: ['Enero', 'Febrero', 'Marzo'], a: 2 },
+    { q: '¿Cuántas patas tiene una araña?', o: ['6', '8', '10'], a: 1 },
+    { q: '¿Qué es más rápido: un coche o una bicicleta?', o: ['Coche', 'Bicicleta', 'Son iguales'], a: 0 },
+    { q: '¿Cuánto es 100 dividido entre 10?', o: ['10', '20', '30'], a: 0 },
+    { q: '¿Qué viene después del lunes?', o: ['Martes', 'Miércoles', 'Domingo'], a: 0 },
+    { q: '¿Cuántos días hay en una semana?', o: ['5', '7', '10'], a: 1 },
+    { q: '¿Cuál es el color del cielo en un día despejado?', o: ['Azul', 'Gris', 'Rojo'], a: 0 },
+    { q: 'Si dejas caer una pelota, ¿qué hará?', o: ['Flotar', 'Hundirse', 'Caer'], a: 2 },
+    { q: '¿Cómo se llama el lugar donde duermes?', o: ['Cocina', 'Baño', 'Dormitorio'], a: 2 },
+    { q: '¿Cuántos continentes hay en la Tierra?', o: ['5', '6', '7'], a: 2 },
+    { q: '¿Cuál es el ingrediente principal del pan?', o: ['Arroz', 'Harina', 'Azúcar'], a: 1 },
+    { q: '¿Qué usas para escribir?', o: ['Pluma', 'Tenedor', 'Cuchara'], a: 0 },
+    { q: '¿Qué animal dice "muu"?', o: ['Gato', 'Perro', 'Vaca'], a: 2 },
+    { q: '¿Cuál es el nombre de nuestro planeta?', o: ['Marte', 'Tierra', 'Júpiter'], a: 1 },
+    { q: '¿Cuál es el opuesto de grande?', o: ['Pequeño', 'Grande', 'Ancho'], a: 0 },
+    { q: '¿Cuántos colores hay en un arcoíris?', o: ['5', '7', '9'], a: 1 },
+    { q: '¿Qué fruta es amarilla y curva?', o: ['Manzana', 'Plátano', 'Uva'], a: 1 },
+    { q: '¿Cuál es la estación después del verano?', o: ['Otoño', 'Primavera', 'Invierno'], a: 0 },
+    { q: '¿Qué forma tiene una pelota?', o: ['Cuadrado', 'Círculo', 'Triángulo'], a: 1 },
+    { q: '¿Qué usas para comer sopa?', o: ['Tenedor', 'Cuchillo', 'Cuchara'], a: 2 },
+    { q: '¿Cuál es la moneda de Estados Unidos?', o: ['Dólar', 'Euro', 'Libra'], a: 0 },
+        ]
+    },
+    de: {
+        gameTitle: 'Logikspiel',
+        question: 'Frage',
+        correct: 'Richtig!',
+        incorrect: 'Falsch!',
+        score: 'Dein Punktestand',
+        correctAnswers: 'Richtige Antworten',
+        incorrectAnswers: 'Falsche Antworten',
+        restartGame: 'Spiel Neu Starten',
+        backToDifficulty: 'Zurück zur Schwierigkeit',
+        questions: [
+             { q: 'Was ist 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: 'Was ist 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Welche Zahl ist größer: 7 oder 5?', o: ['7', '5', 'Sie sind gleich'], a: 0 },
+    { q: 'Was ist 3 x 3?', o: ['6', '8', '9'], a: 2 },
+    { q: 'Welche Zahl folgt in der Reihe: 1, 3, 5, 7?', o: ['8', '9', '10'], a: 1 },
+    { q: 'Wie viele Seiten hat ein Dreieck?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Was ist schwerer: ein Kilogramm Federn oder ein Kilogramm Steine?', o: ['Federn', 'Steine', 'Beides gleich'], a: 2 },
+    { q: 'Was ist die Hauptstadt von Italien?', o: ['Rom', 'Paris', 'Berlin'], a: 0 },
+    { q: 'Wie viele Monate hat ein Jahr?', o: ['10', '12', '14'], a: 1 },
+    { q: 'Welche Farbe hat die Sonne?', o: ['Rot', 'Gelb', 'Grün'], a: 1 },
+    { q: 'Wenn du 3 Äpfel hast und 2 nimmst, wie viele Äpfel hast du?', o: ['2', '3', '1'], a: 0 },
+    { q: 'Welche Form hat vier gleiche Seiten?', o: ['Dreieck', 'Rechteck', 'Quadrat'], a: 2 },
+    { q: 'Was ist kälter: Eis oder kochendes Wasser?', o: ['Eis', 'Kochendes Wasser', 'Beides gleich'], a: 0 },
+    { q: 'Was ist das Gegenteil von Nacht?', o: ['Tag', 'Abend', 'Morgen'], a: 0 },
+    { q: 'Welcher ist der dritte Monat des Jahres?', o: ['Januar', 'Februar', 'März'], a: 2 },
+    { q: 'Wie viele Beine hat eine Spinne?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Was ist schneller: ein Auto oder ein Fahrrad?', o: ['Auto', 'Fahrrad', 'Beides gleich'], a: 0 },
+    { q: 'Was ist 100 geteilt durch 10?', o: ['10', '20', '30'], a: 0 },
+    { q: 'Was kommt nach Montag?', o: ['Dienstag', 'Mittwoch', 'Sonntag'], a: 0 },
+    { q: 'Wie viele Tage hat eine Woche?', o: ['5', '7', '10'], a: 1 },
+    { q: 'Welche Farbe hat der Himmel an einem klaren Tag?', o: ['Blau', 'Grau', 'Rot'], a: 0 },
+    { q: 'Wenn du einen Ball fallen lässt, was passiert?', o: ['Schweben', 'Sinken', 'Fallen'], a: 2 },
+    { q: 'Wie heißt der Raum, in dem du schläfst?', o: ['Küche', 'Bad', 'Schlafzimmer'], a: 2 },
+    { q: 'Wie viele Kontinente gibt es auf der Erde?', o: ['5', '6', '7'], a: 2 },
+    { q: 'Was ist die Hauptzutat für Brot?', o: ['Reis', 'Mehl', 'Zucker'], a: 1 },
+    { q: 'Was benutzt man zum Schreiben?', o: ['Stift', 'Gabel', 'Löffel'], a: 0 },
+    { q: 'Welches Tier sagt "muh"?', o: ['Katze', 'Hund', 'Kuh'], a: 2 },
+    { q: 'Wie heißt unser Planet?', o: ['Mars', 'Erde', 'Jupiter'], a: 1 },
+    { q: 'Was ist das Gegenteil von groß?', o: ['Klein', 'Groß', 'Breit'], a: 0 },
+    { q: 'Wie viele Farben hat ein Regenbogen?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Welches Obst ist gelb und gebogen?', o: ['Apfel', 'Banane', 'Traube'], a: 1 },
+    { q: 'Welche Jahreszeit kommt nach dem Sommer?', o: ['Herbst', 'Frühling', 'Winter'], a: 0 },
+    { q: 'Welche Form hat ein Ball?', o: ['Quadrat', 'Kreis', 'Dreieck'], a: 1 },
+    { q: 'Was benutzt man, um Suppe zu essen?', o: ['Gabel', 'Messer', 'Löffel'], a: 2 },
+    { q: 'Was ist die Währung der Vereinigten Staaten?', o: ['Dollar', 'Euro', 'Pfund'], a: 0 },
+        ]
+    },
+    it: {
+        gameTitle: 'Gioco di Logica',
+        question: 'Domanda',
+        correct: 'Corretto!',
+        incorrect: 'Sbagliato!',
+        score: 'Il Tuo Punteggio',
+        correctAnswers: 'Risposte Corrette',
+        incorrectAnswers: 'Risposte Sbagliate',
+        restartGame: 'Ricomincia Il Gioco',
+        backToDifficulty: 'Torna alla Difficoltà',
+        questions: [
+             { q: 'Quanto fa 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: 'Quanto fa 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Qual è il numero maggiore: 7 o 5?', o: ['7', '5', 'Sono uguali'], a: 0 },
+    { q: 'Quanto fa 3 x 3?', o: ['6', '8', '9'], a: 2 },
+    { q: 'Qual è il numero successivo nella sequenza: 1, 3, 5, 7?', o: ['8', '9', '10'], a: 1 },
+    { q: 'Quanti lati ha un triangolo?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Cosa è più pesante: un chilogrammo di piume o un chilogrammo di pietre?', o: ['Piume', 'Pietre', 'Sono uguali'], a: 2 },
+    { q: 'Qual è la capitale d’Italia?', o: ['Roma', 'Parigi', 'Berlino'], a: 0 },
+    { q: 'Quanti mesi ci sono in un anno?', o: ['10', '12', '14'], a: 1 },
+    { q: 'Qual è il colore del sole?', o: ['Rosso', 'Giallo', 'Verde'], a: 1 },
+    { q: 'Se hai 3 mele e ne prendi 2, quante mele hai?', o: ['2', '3', '1'], a: 0 },
+    { q: 'Qual è la forma con quattro lati uguali?', o: ['Triangolo', 'Rettangolo', 'Quadrato'], a: 2 },
+    { q: 'Cosa è più freddo: il ghiaccio o l’acqua bollente?', o: ['Ghiaccio', 'Acqua Bollente', 'Sono uguali'], a: 0 },
+    { q: 'Qual è l’opposto della notte?', o: ['Giorno', 'Notte', 'Mattina'], a: 0 },
+    { q: 'Qual è il terzo mese dell’anno?', o: ['Gennaio', 'Febbraio', 'Marzo'], a: 2 },
+    { q: 'Quante zampe ha un ragno?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Cosa è più veloce: un’auto o una bicicletta?', o: ['Auto', 'Bicicletta', 'Sono uguali'], a: 0 },
+    { q: 'Quanto fa 100 diviso 10?', o: ['10', '20', '30'], a: 0 },
+    { q: 'Cosa viene dopo lunedì?', o: ['Martedì', 'Mercoledì', 'Domenica'], a: 0 },
+    { q: 'Quanti giorni ci sono in una settimana?', o: ['5', '7', '10'], a: 1 },
+    { q: 'Qual è il colore del cielo in una giornata serena?', o: ['Blu', 'Grigio', 'Rosso'], a: 0 },
+    { q: 'Se lasci cadere una palla, cosa succede?', o: ['Galleggia', 'Affonda', 'Cade'], a: 2 },
+    { q: 'Come si chiama il luogo dove dormi?', o: ['Cucina', 'Bagno', 'Camera da letto'], a: 2 },
+    { q: 'Quanti continenti ci sono sulla Terra?', o: ['5', '6', '7'], a: 2 },
+    { q: 'Qual è l’ingrediente principale del pane?', o: ['Riso', 'Farina', 'Zucchero'], a: 1 },
+    { q: 'Cosa usi per scrivere?', o: ['Penna', 'Forchetta', 'Cucchiaio'], a: 0 },
+    { q: 'Quale animale dice "muu"?', o: ['Gatto', 'Cane', 'Mucca'], a: 2 },
+    { q: 'Qual è il nome del nostro pianeta?', o: ['Marte', 'Terra', 'Giove'], a: 1 },
+    { q: 'Qual è l’opposto di grande?', o: ['Piccolo', 'Grande', 'Largo'], a: 0 },
+    { q: 'Quanti colori ci sono in un arcobaleno?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Quale frutto è giallo e curvo?', o: ['Mela', 'Banana', 'Uva'], a: 1 },
+    { q: 'Qual è la stagione dopo l’estate?', o: ['Autunno', 'Primavera', 'Inverno'], a: 0 },
+    { q: 'Qual è la forma di una palla?', o: ['Quadrato', 'Cerchio', 'Triangolo'], a: 1 },
+    { q: 'Cosa usi per mangiare la zuppa?', o: ['Forchetta', 'Coltello', 'Cucchiaio'], a: 2 },
+    { q: 'Qual è la moneta degli Stati Uniti?', o: ['Dollaro', 'Euro', 'Sterlina'], a: 0 },
+        ]
+    },
+    pt: {
+        gameTitle: 'Jogo de Lógica',
+        question: 'Pergunta',
+        correct: 'Correto!',
+        incorrect: 'Incorreto!',
+        score: 'Sua Pontuação',
+        correctAnswers: 'Respostas Corretas',
+        incorrectAnswers: 'Respostas Incorretas',
+        restartGame: 'Reiniciar Jogo',
+        backToDifficulty: 'Voltar à Dificuldade',
+        questions: [
+            { q: 'Quanto é 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: 'Quanto é 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Qual número é maior: 7 ou 5?', o: ['7', '5', 'Iguais'], a: 0 },
+    { q: 'Quanto é 3 × 3?', o: ['6', '8', '9'], a: 2 },
+    { q: 'Na sequência 1, 3, 5, 7, qual é o próximo número?', o: ['8', '9', '10'], a: 1 },
+    { q: 'Quantos lados tem um triângulo?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Qual é mais pesado: um quilograma de penas ou um quilograma de pedras?', o: ['Penas', 'Pedras', 'Iguais'], a: 2 },
+    { q: 'Qual é a capital da Itália?', o: ['Roma', 'Paris', 'Berlim'], a: 0 },
+    { q: 'Quantos meses há em um ano?', o: ['10', '12', '14'], a: 1 },
+    { q: 'Qual é a cor do sol?', o: ['Vermelho', 'Amarelo', 'Verde'], a: 1 },
+    { q: 'Se você tem 3 maçãs e come 2, quantas maçãs você tem?', o: ['2', '3', '1'], a: 0 },
+    { q: 'Qual forma tem quatro lados iguais?', o: ['Triângulo', 'Retângulo', 'Quadrado'], a: 2 },
+    { q: 'O que é mais frio: gelo ou água fervente?', o: ['Gelo', 'Água fervente', 'Iguais'], a: 0 },
+    { q: 'Qual é o oposto de noite?', o: ['Dia', 'Noite', 'Manhã'], a: 0 },
+    { q: 'Qual é o terceiro mês do ano?', o: ['Janeiro', 'Fevereiro', 'Março'], a: 2 },
+    { q: 'Quantas pernas tem uma aranha?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Qual é mais rápido: um carro ou uma bicicleta?', o: ['Carro', 'Bicicleta', 'Iguais'], a: 0 },
+    { q: 'Quanto é 100 dividido por 10?', o: ['10', '20', '30'], a: 0 },
+    { q: 'O que vem depois de segunda-feira?', o: ['Terça-feira', 'Quarta-feira', 'Domingo'], a: 0 },
+    { q: 'Quantos dias há em uma semana?', o: ['5', '7', '10'], a: 1 },
+    { q: 'Qual é a cor do céu em um dia claro?', o: ['Azul', 'Cinza', 'Vermelho'], a: 0 },
+    { q: 'O que acontece se você deixar uma bola cair?', o: ['Flutua', 'Afunda', 'Cai'], a: 2 },
+    { q: 'Como se chama o quarto onde você dorme?', o: ['Cozinha', 'Banheiro', 'Quarto'], a: 2 },
+    { q: 'Quantos continentes existem na Terra?', o: ['5', '6', '7'], a: 2 },
+    { q: 'Qual é o principal ingrediente do pão?', o: ['Arroz', 'Farinha', 'Açúcar'], a: 1 },
+    { q: 'O que você usa para escrever?', o: ['Caneta', 'Garfo', 'Colher'], a: 0 },
+    { q: 'Qual animal diz "mú"?', o: ['Gato', 'Cachorro', 'Vaca'], a: 2 },
+    { q: 'Qual é o nome do nosso planeta?', o: ['Marte', 'Terra', 'Júpiter'], a: 1 },
+    { q: 'Qual é o oposto de grande?', o: ['Pequeno', 'Grande', 'Largo'], a: 0 },
+    { q: 'Quantas cores tem o arco-íris?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Qual fruta é amarela e curva?', o: ['Maçã', 'Banana', 'Uva'], a: 1 },
+    { q: 'Qual estação vem depois do verão?', o: ['Outono', 'Primavera', 'Inverno'], a: 0 },
+    { q: 'Qual é a forma de uma bola?', o: ['Quadrado', 'Círculo', 'Triângulo'], a: 1 },
+    { q: 'O que você usa para comer sopa?', o: ['Garfo', 'Faca', 'Colher'], a: 2 },
+    { q: 'Qual é a moeda dos EUA?', o: ['Dólar', 'Euro', 'Libra'], a: 0 },
+        ]
+    },
+    ru: {
+        gameTitle: 'Логическая Игра',
+        question: 'Вопрос',
+        correct: 'Правильно!',
+        incorrect: 'Неправильно!',
+        score: 'Ваш Балл',
+        correctAnswers: 'Правильные Ответы',
+        incorrectAnswers: 'Неправильные Ответы',
+        restartGame: 'Начать Заново',
+        backToDifficulty: 'Назад к Уровню Сложности',
+        questions: [
+            { q: 'Сколько будет 2 + 3?', o: ['4', '5', '6'], a: 1 },
+    { q: 'Сколько будет 10 - 4?', o: ['6', '7', '8'], a: 0 },
+    { q: 'Какое число больше: 7 или 5?', o: ['7', '5', 'Одинаковые'], a: 0 },
+    { q: 'Сколько будет 3 × 3?', o: ['6', '8', '9'], a: 2 },
+    { q: 'Какое число следует за 1, 3, 5, 7?', o: ['8', '9', '10'], a: 1 },
+    { q: 'Сколько сторон у треугольника?', o: ['3', '4', '5'], a: 0 },
+    { q: 'Что тяжелее: килограмм перьев или килограмм камней?', o: ['Перо', 'Камень', 'Одинаковые'], a: 2 },
+    { q: 'Какая столица Италии?', o: ['Рим', 'Париж', 'Берлин'], a: 0 },
+    { q: 'Сколько месяцев в году?', o: ['10', '12', '14'], a: 1 },
+    { q: 'Какого цвета солнце?', o: ['Красное', 'Желтое', 'Зеленое'], a: 1 },
+    { q: 'Если у тебя 3 яблока, и ты возьмешь 2, сколько у тебя останется яблок?', o: ['2', '3', '1'], a: 0 },
+    { q: 'Какой фигуры четыре равные стороны?', o: ['Треугольник', 'Прямоугольник', 'Квадрат'], a: 2 },
+    { q: 'Что холоднее: лед или кипящая вода?', o: ['Лед', 'Кипящая вода', 'Одинаковые'], a: 0 },
+    { q: 'Какой противоположность ночи?', o: ['День', 'Ночь', 'Утро'], a: 0 },
+    { q: 'Какой третий месяц года?', o: ['Январь', 'Февраль', 'Март'], a: 2 },
+    { q: 'Сколько ног у паука?', o: ['6', '8', '10'], a: 1 },
+    { q: 'Что быстрее: машина или велосипед?', o: ['Машина', 'Велосипед', 'Одинаковые'], a: 0 },
+    { q: 'Сколько будет 100 разделить на 10?', o: ['10', '20', '30'], a: 0 },
+    { q: 'Что идет после понедельника?', o: ['Вторник', 'Среда', 'Воскресенье'], a: 0 },
+    { q: 'Сколько дней в неделе?', o: ['5', '7', '10'], a: 1 },
+    { q: 'Какого цвета небо в ясный день?', o: ['Синий', 'Серый', 'Красный'], a: 0 },
+    { q: 'Что произойдет, если ты уронит мяч?', o: ['Парит', 'Утопает', 'Падает'], a: 2 },
+    { q: 'Как называется комната, в которой ты спишь?', o: ['Кухня', 'Ванная', 'Спальня'], a: 2 },
+    { q: 'Сколько континентов на Земле?', o: ['5', '6', '7'], a: 2 },
+    { q: 'Какой основной ингредиент для хлеба?', o: ['Рис', 'Мука', 'Сахар'], a: 1 },
+    { q: 'Что используешь для письма?', o: ['Ручка', 'Вилка', 'Ложка'], a: 0 },
+    { q: 'Какое животное говорит "му"?', o: ['Кошка', 'Собака', 'Корова'], a: 2 },
+    { q: 'Как называется наша планета?', o: ['Марс', 'Земля', 'Юпитер'], a: 1 },
+    { q: 'Какое противоположность большого?', o: ['Маленькое', 'Большое', 'Широкое'], a: 0 },
+    { q: 'Сколько цветов в радуге?', o: ['5', '7', '9'], a: 1 },
+    { q: 'Какой фрукт желтый и изогнутый?', o: ['Яблоко', 'Банан', 'Виноград'], a: 1 },
+    { q: 'Какой сезон идет после лета?', o: ['Осень', 'Весна', 'Зима'], a: 0 },
+    { q: 'Какой формы мяч?', o: ['Квадрат', 'Круг', 'Треугольник'], a: 1 },
+    { q: 'Что используешь для супа?', o: ['Вилка', 'Нож', 'Ложка'], a: 2 },
+    { q: 'Какая валюта в США?', o: ['Доллар', 'Евро', 'Фунт'], a: 0 },
+        ]
+    },
+    zh: {
+        gameTitle: '逻辑游戏',
+        question: '问题',
+        correct: '正确！',
+        incorrect: '错误！',
+        score: '你的分数',
+        correctAnswers: '正确回答',
+        incorrectAnswers: '错误回答',
+        restartGame: '重新开始',
+        backToDifficulty: '返回难度选择',
+        questions: [
+            { q: '2 + 3 等于多少？', o: ['4', '5', '6'], a: 1 },
+    { q: '10 - 4 等于多少？', o: ['6', '7', '8'], a: 0 },
+    { q: '哪个数字更大：7 还是 5？', o: ['7', '5', '一样'], a: 0 },
+    { q: '3 × 3 等于多少？', o: ['6', '8', '9'], a: 2 },
+    { q: '在序列 1、3、5、7 中，接下来的数字是什么？', o: ['8', '9', '10'], a: 1 },
+    { q: '三角形有多少条边？', o: ['3', '4', '5'], a: 0 },
+    { q: '一公斤羽毛和一公斤石头哪个更重？', o: ['羽毛', '石头', '一样'], a: 2 },
+    { q: '意大利的首都是什么？', o: ['罗马', '巴黎', '柏林'], a: 0 },
+    { q: '一年有多少个月？', o: ['10', '12', '14'], a: 1 },
+    { q: '太阳是什么颜色？', o: ['红色', '黄色', '绿色'], a: 1 },
+    { q: '如果你有3个苹果，拿走2个，你还有多少个苹果？', o: ['2', '3', '1'], a: 0 },
+    { q: '哪个形状有四条相等的边？', o: ['三角形', '矩形', '正方形'], a: 2 },
+    { q: '冰和开水哪个更冷？', o: ['冰', '开水', '一样'], a: 0 },
+    { q: '夜晚的反义词是什么？', o: ['白天', '夜晚', '早晨'], a: 0 },
+    { q: '一年中的第三个月是什么？', o: ['一月', '二月', '三月'], a: 2 },
+    { q: '蜘蛛有多少条腿？', o: ['6', '8', '10'], a: 1 },
+    { q: '哪个更快：汽车还是自行车？', o: ['汽车', '自行车', '一样'], a: 0 },
+    { q: '100 除以 10 等于多少？', o: ['10', '20', '30'], a: 0 },
+    { q: '星期一之后是什么？', o: ['星期二', '星期三', '星期天'], a: 0 },
+    { q: '一周有多少天？', o: ['5', '7', '10'], a: 1 },
+    { q: '晴天的天空是什么颜色？', o: ['蓝色', '灰色', '红色'], a: 0 },
+    { q: '如果你掉下一个球，会发生什么？', o: ['漂浮', '沉下', '掉落'], a: 2 },
+    { q: '你睡觉的房间叫什么？', o: ['厨房', '浴室', '卧室'], a: 2 },
+    { q: '地球上有多少个大洲？', o: ['5', '6', '7'], a: 2 },
+    { q: '面包的主要成分是什么？', o: ['米', '面粉', '糖'], a: 1 },
+    { q: '你用什么来写字？', o: ['笔', '叉子', '勺子'], a: 0 },
+    { q: '哪种动物会说“哞”？', o: ['猫', '狗', '牛'], a: 2 },
+    { q: '我们的星球叫什么？', o: ['火星', '地球', '木星'], a: 1 },
+    { q: '“大”的反义词是什么？', o: ['小', '大', '宽'], a: 0 },
+    { q: '彩虹有多少种颜色？', o: ['5', '7', '9'], a: 1 },
+    { q: '哪种水果是黄色和弯曲的？', o: ['苹果', '香蕉', '葡萄'], a: 1 },
+    { q: '夏天之后的季节是什么？', o: ['秋天', '春天', '冬天'], a: 0 },
+    { q: '球的形状是什么？', o: ['正方形', '圆形', '三角形'], a: 1 },
+    { q: '你用什么来吃汤？', o: ['叉子', '刀子', '勺子'], a: 2 },
+    { q: '美国的货币是什么？', o: ['美元', '欧元', '英镑'], a: 0 },
+        ]
+    },
+    ja: {
+        gameTitle: '論理ゲーム',
+        question: '質問',
+        correct: '正解！',
+        incorrect: '不正解！',
+        score: 'あなたのスコア',
+        correctAnswers: '正しい回答',
+        incorrectAnswers: '間違った回答',
+        restartGame: 'ゲームを再起動',
+        backToDifficulty: '難易度に戻る',
+        questions: [
+            { q: '2 + 3 はいくつですか？', o: ['4', '5', '6'], a: 1 },
+    { q: '10 - 4 はいくつですか？', o: ['6', '7', '8'], a: 0 },
+    { q: 'どちらが大きいですか：7 それとも 5？', o: ['7', '5', '同じ'], a: 0 },
+    { q: '3 × 3 はいくつですか？', o: ['6', '8', '9'], a: 2 },
+    { q: '1、3、5、7 の次に来る数字は？', o: ['8', '9', '10'], a: 1 },
+    { q: '三角形にはいくつの辺がありますか？', o: ['3', '4', '5'], a: 0 },
+    { q: '1キログラムの羽毛と1キログラムの石、どちらが重いですか？', o: ['羽毛', '石', '同じ'], a: 2 },
+    { q: 'イタリアの首都はどこですか？', o: ['ローマ', 'パリ', 'ベルリン'], a: 0 },
+    { q: '1年には何ヶ月ありますか？', o: ['10', '12', '14'], a: 1 },
+    { q: '太陽の色は何ですか？', o: ['赤', '黄', '緑'], a: 1 },
+    { q: 'もし3つのリンゴがあって、2つ取ったら、いくつのリンゴが残りますか？', o: ['2', '3', '1'], a: 0 },
+    { q: '4つの同じ長さの辺を持つ形はどれですか？', o: ['三角形', '長方形', '正方形'], a: 2 },
+    { q: '氷と沸騰した水、どちらが冷たいですか？', o: ['氷', '沸騰した水', '同じ'], a: 0 },
+    { q: '夜の反対は何ですか？', o: ['昼', '夜', '朝'], a: 0 },
+    { q: '1年の3番目の月は何ですか？', o: ['1月', '2月', '3月'], a: 2 },
+    { q: 'クモには何本の足がありますか？', o: ['6', '8', '10'], a: 1 },
+    { q: '車と自転車、どちらが速いですか？', o: ['車', '自転車', '同じ'], a: 0 },
+    { q: '100を10で割るといくつですか？', o: ['10', '20', '30'], a: 0 },
+    { q: '月曜日の次の日は何ですか？', o: ['火曜日', '水曜日', '日曜日'], a: 0 },
+    { q: '1週間には何日ありますか？', o: ['5', '7', '10'], a: 1 },
+    { q: '晴れた日に空の色は何ですか？', o: ['青', '灰', '赤'], a: 0 },
+    { q: 'ボールを落とすとどうなりますか？', o: ['浮く', '沈む', '落ちる'], a: 2 },
+    { q: '寝るための部屋は何と呼びますか？', o: ['キッチン', 'バスルーム', '寝室'], a: 2 },
+    { q: '地球には大陸がいくつありますか？', o: ['5', '6', '7'], a: 2 },
+    { q: 'パンの主な材料は何ですか？', o: ['ご飯', '小麦粉', '砂糖'], a: 1 },
+    { q: '書くために使うものは何ですか？', o: ['ペン', 'フォーク', 'スプーン'], a: 0 },
+    { q: '「ムー」と言う動物はどれですか？', o: ['猫', '犬', '牛'], a: 2 },
+    { q: '私たちの惑星の名前は何ですか？', o: ['火星', '地球', '木星'], a: 1 },
+    { q: '「大きい」の反対は何ですか？', o: ['小さい', '大きい', '広い'], a: 0 },
+    { q: '虹には何色ありますか？', o: ['5', '7', '9'], a: 1 },
+    { q: '黄色くて曲がった果物はどれですか？', o: ['りんご', 'バナナ', 'ぶどう'], a: 1 },
+    { q: '夏の後に来る季節は何ですか？', o: ['秋', '春', '冬'], a: 0 },
+    { q: 'ボールの形は何ですか？', o: ['四角', '円', '三角'], a: 1 },
+    { q: 'スープを食べるときに使うものは何ですか？', o: ['フォーク', 'ナイフ', 'スプーン'], a: 2 },
+    { q: 'アメリカの通貨は何ですか？', o: ['ドル', 'ユーロ', 'ポンド'], a: 0 },
+        ]
+    },
+    ko: {
+        gameTitle: '논리 게임',
+        question: '질문',
+        correct: '정답입니다!',
+        incorrect: '오답입니다!',
+        score: '당신의 점수',
+        correctAnswers: '정답 개수',
+        incorrectAnswers: '오답 개수',
+        restartGame: '게임 재시작',
+        backToDifficulty: '난이도로 돌아가기',
+        questions: [
+             { q: '2 + 3은 얼마인가요?', o: ['4', '5', '6'], a: 1 },
+    { q: '10 - 4는 얼마인가요?', o: ['6', '7', '8'], a: 0 },
+    { q: '어느 것이 더 큰가요: 7 또는 5?', o: ['7', '5', '같다'], a: 0 },
+    { q: '3 × 3은 얼마인가요?', o: ['6', '8', '9'], a: 2 },
+    { q: '1, 3, 5, 7 다음에는 어떤 숫자가 오나요?', o: ['8', '9', '10'], a: 1 },
+    { q: '삼각형에는 몇 개의 변이 있나요?', o: ['3', '4', '5'], a: 0 },
+    { q: '1킬로그램의 깃털과 1킬로그램의 돌, 어느 쪽이 더 무겁나요?', o: ['깃털', '돌', '같다'], a: 2 },
+    { q: '이탈리아의 수도는 어디인가요?', o: ['로마', '파리', '베를린'], a: 0 },
+    { q: '1년에 몇 개월이 있나요?', o: ['10', '12', '14'], a: 1 },
+    { q: '태양의 색깔은 무엇인가요?', o: ['빨간색', '노란색', '초록색'], a: 1 },
+    { q: '사과 3개가 있고 2개를 먹으면 몇 개가 남나요?', o: ['2', '3', '1'], a: 0 },
+    { q: '네 개의 같은 길이의 변을 가진 도형은 무엇인가요?', o: ['삼각형', '직사각형', '정사각형'], a: 2 },
+    { q: '얼음과 끓는 물 중 어떤 것이 더 차가운가요?', o: ['얼음', '끓는 물', '같다'], a: 0 },
+    { q: '밤의 반대는 무엇인가요?', o: ['낮', '밤', '아침'], a: 0 },
+    { q: '1년의 세 번째 달은 무엇인가요?', o: ['1월', '2월', '3월'], a: 2 },
+    { q: '거미는 몇 개의 다리가 있나요?', o: ['6', '8', '10'], a: 1 },
+    { q: '자동차와 자전거 중 어떤 것이 더 빠르나요?', o: ['자동차', '자전거', '같다'], a: 0 },
+    { q: '100을 10으로 나누면 얼마인가요?', o: ['10', '20', '30'], a: 0 },
+    { q: '월요일 다음에는 무엇이 오나요?', o: ['화요일', '수요일', '일요일'], a: 0 },
+    { q: '1주일에는 며칠이 있나요?', o: ['5', '7', '10'], a: 1 },
+    { q: '맑은 날에 하늘의 색깔은 무엇인가요?', o: ['파란색', '회색', '빨간색'], a: 0 },
+    { q: '공을 떨어뜨리면 어떻게 되나요?', o: ['떠오른다', '가라앉는다', '떨어진다'], a: 2 },
+    { q: '자러 가는 방을 뭐라고 하나요?', o: ['부엌', '욕실', '침실'], a: 2 },
+    { q: '지구에는 대륙이 몇 개 있나요?', o: ['5', '6', '7'], a: 2 },
+    { q: '빵의 주된 재료는 무엇인가요?', o: ['쌀', '밀가루', '설탕'], a: 1 },
+    { q: '쓰는데 사용하는 것은 무엇인가요?', o: ['펜', '포크', '숟가락'], a: 0 },
+    { q: '“음”이라고 말하는 동물은 무엇인가요?', o: ['고양이', '개', '소'], a: 2 },
+    { q: '우리 지구의 이름은 무엇인가요?', o: ['화성', '지구', '목성'], a: 1 },
+    { q: '“큰”의 반대는 무엇인가요?', o: ['작은', '큰', '넓은'], a: 0 },
+    { q: '무지개에는 몇 가지 색이 있나요?', o: ['5', '7', '9'], a: 1 },
+    { q: '노란색이고 구부러진 과일은 무엇인가요?', o: ['사과', '바나나', '포도'], a: 1 },
+    { q: '여름 다음에 오는 계절은 무엇인가요?', o: ['가을', '봄', '겨울'], a: 0 },
+    { q: '공의 모양은 무엇인가요?', o: ['사각형', '원', '삼각형'], a: 1 },
+    { q: '수프를 먹을 때 사용하는 것은 무엇인가요?', o: ['포크', '칼', '숟가락'], a: 2 },
+    { q: '미국의 통화는 무엇인가요?', o: ['달러', '유로', '파운드'], a: 0 },
+        ]
+    },
+    ar: {
+        gameTitle: 'لعبة المنطق',
+        question: 'سؤال',
+        correct: 'صحيح!',
+        incorrect: 'خطأ!',
+        score: 'نتيجتك',
+        correctAnswers: 'الإجابات الصحيحة',
+        incorrectAnswers: 'الإجابات الخاطئة',
+        restartGame: 'إعادة تشغيل اللعبة',
+        backToDifficulty: 'العودة إلى مستوى الصعوبة',
+        questions: [
+            { q: 'كم هو 2 + 3؟', o: ['4', '5', '6'], a: 1 },
+    { q: 'كم هو 10 - 4؟', o: ['6', '7', '8'], a: 0 },
+    { q: 'أي رقم أكبر: 7 أم 5؟', o: ['7', '5', 'متساويان'], a: 0 },
+    { q: 'كم هو 3 × 3؟', o: ['6', '8', '9'], a: 2 },
+    { q: 'ما هو الرقم التالي في السلسلة: 1، 3، 5، 7؟', o: ['8', '9', '10'], a: 1 },
+    { q: 'كم عدد أضلاع المثلث؟', o: ['3', '4', '5'], a: 0 },
+    { q: 'ما هو الأثقل: كيلوغرام من الريش أم كيلوغرام من الحجارة؟', o: ['ريش', 'حجارة', 'متساويان'], a: 2 },
+    { q: 'ما هي عاصمة إيطاليا؟', o: ['روما', 'باريس', 'برلين'], a: 0 },
+    { q: 'كم عدد الشهور في السنة؟', o: ['10', '12', '14'], a: 1 },
+    { q: 'ما هو لون الشمس؟', o: ['أحمر', 'أصفر', 'أخضر'], a: 1 },
+    { q: 'إذا كان لديك 3 تفاحات وأخذت منها 2، كم تفاحة لديك؟', o: ['2', '3', '1'], a: 0 },
+    { q: 'ما هو الشكل الذي يحتوي على أربعة أضلاع متساوية؟', o: ['مثلث', 'مستطيل', 'مربع'], a: 2 },
+    { q: 'ما هو الأبرد: الثلج أم الماء المغلي؟', o: ['ثلج', 'ماء مغلي', 'متساويان'], a: 0 },
+    { q: 'ما هو عكس الليل؟', o: ['نهار', 'ليل', 'صباح'], a: 0 },
+    { q: 'ما هو الشهر الثالث في السنة؟', o: ['يناير', 'فبراير', 'مارس'], a: 2 },
+    { q: 'كم عدد أرجل العنكبوت؟', o: ['6', '8', '10'], a: 1 },
+    { q: 'ما هو الأسرع: السيارة أم الدراجة؟', o: ['سيارة', 'دراجة', 'متساويان'], a: 0 },
+    { q: 'كم هو 100 مقسوم على 10؟', o: ['10', '20', '30'], a: 0 },
+    { q: 'ماذا يأتي بعد الاثنين؟', o: ['ثلاثاء', 'أربعاء', 'أحد'], a: 0 },
+    { q: 'كم عدد الأيام في الأسبوع؟', o: ['5', '7', '10'], a: 1 },
+    { q: 'ما هو لون السماء في يوم صافٍ؟', o: ['أزرق', 'رمادي', 'أحمر'], a: 0 },
+    { q: 'ماذا يحدث إذا أسقطت كرة؟', o: ['تطفو', 'تغرق', 'تسقط'], a: 2 },
+    { q: 'ما هو اسم الغرفة التي تنام فيها؟', o: ['مطبخ', 'حمام', 'غرفة نوم'], a: 2 },
+    { q: 'كم عدد القارات على الأرض؟', o: ['5', '6', '7'], a: 2 },
+    { q: 'ما هو المكون الأساسي للخبز؟', o: ['أرز', 'دقيق', 'سكر'], a: 1 },
+    { q: 'ماذا تستخدم للكتابة؟', o: ['قلم', 'شوكة', 'ملعقة'], a: 0 },
+    { q: 'أي حيوان يقول "مُو"؟', o: ['قطة', 'كلب', 'بقرة'], a: 2 },
+    { q: 'ما اسم كوكبنا؟', o: ['مارس', 'أرض', 'المشتري'], a: 1 },
+    { q: 'ما هو عكس الكبير؟', o: ['صغير', 'كبير', 'عريض'], a: 0 },
+    { q: 'كم عدد الألوان في قوس قزح؟', o: ['5', '7', '9'], a: 1 },
+    { q: 'أي فاكهة صفراء ومنحنية؟', o: ['تفاحة', 'موز', 'عنب'], a: 1 },
+    { q: 'ما هي الفصول التي تأتي بعد الصيف؟', o: ['خريف', 'ربيع', 'شتاء'], a: 0 },
+    { q: 'ما هو شكل الكرة؟', o: ['مربع', 'دائرة', 'مثلث'], a: 1 },
+    { q: 'ماذا تستخدم لتناول الحساء؟', o: ['شوكة', 'سكين', 'ملعقة'], a: 2 },
+    { q: 'ما هي العملة الأمريكية؟', o: ['دولار', 'يورو', 'جنيه'], a: 0 },
+        ]
+    }
+	
+};
+
+
+
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        const totalQuestions = 30; // Adjust according to the number of questions
+
+        function startGame() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questions = translations[lang].questions;
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('gameTitle').innerText = translations[lang].gameTitle;
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questionData = translations[lang].questions[currentQuestionIndex];
+            if (!questionData) {
+                showScore();
+                return;
+            }
+            document.getElementById('question').innerText = questionData.q;
+            document.getElementById('options').innerHTML = questionData.o.map((option, index) => 
+                `<button onclick="selectAnswer(${index})">${option}</button>`
+            ).join('');
+            document.getElementById('feedback').innerText = '';
+        }
+
+      function selectAnswer(index) {
+    const lang = localStorage.getItem('language') || 'en';
+    const questionData = translations[lang].questions[currentQuestionIndex];
+    if (index === questionData.a) {
+        document.getElementById('feedback').innerText = translations[lang].correct;
+        document.getElementById('feedback').className = 'feedback-correct'; // Applique la classe correcte
+        correctAnswers++;
+        showConfetti();
+    } else {
+        document.getElementById('feedback').innerText = translations[lang].incorrect;
+        document.getElementById('feedback').className = 'feedback-incorrect'; // Applique la classe incorrecte
+        incorrectAnswers++;
+        shakeScreen();
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < totalQuestions) {
+        setTimeout(displayQuestion, 1000); // Delay to show feedback before moving to the next question
+    } else {
+        setTimeout(showScore, 1000); // Delay to show feedback before showing the score
+    }
+}
+
+
+        function showScore() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('score-container').style.display = 'block';
+            const lang = localStorage.getItem('language') || 'en';
+            document.getElementById('score-text').innerText = `${translations[lang].score}: ${correctAnswers}`;
+            document.getElementById('correct-answers-text').innerText = `${translations[lang].correctAnswers}: ${correctAnswers}`;
+            document.getElementById('incorrect-answers-text').innerText = `${translations[lang].incorrectAnswers}: ${incorrectAnswers}`;
+			   document.getElementById('back-to-difficulty').innerText = translations[lang].backToDifficulty; // Met à jour le texte du bouton
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            document.getElementById('score-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            displayQuestion();
+        }
+
+        function showConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function shakeScreen() {
+            const body = document.body;
+            body.classList.add('shake');
+            setTimeout(() => body.classList.remove('shake'), 500); // Duration of shake effect
+        }
+
+       
+	
+
+        // Set the language to English by default
+        localStorage.setItem('language', localStorage.getItem('language') || 'en');
+        startGame();
+		
+		
+    </script>
+</body>
+</html>

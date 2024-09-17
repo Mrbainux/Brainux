@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Game</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <style>
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="gameTitle"></h1>
+        <div id="game-container" style="display: none;">
+            <div id="question-container">
+                <p id="question"></p>
+                <div id="options"></div>
+            </div>
+            <div id="feedback"></div>
+            <div id="score-container" style="display: none;">
+                <p id="score-text"></p>
+                <p id="correct-answers-text"></p>
+                <p id="incorrect-answers-text"></p>
+                
+				<button id="back-to-difficulty"></button> 
+				 <button id="restart-game" onclick="restartGame()">
+				 <i class="fas fa-redo"></i> 
+				 <span class="material-icons"></span> </button>
+            </div>
+        </div>
+ <button id="backk" onclick="backk()">
+				 <i class="fas fa-arrow-left"></i>
+				 <span class="material-icons"></span> </button>
+    </div>
+	
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+    <script>
+	function backToDifficulty() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+
+function backk() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+document.getElementById('back-to-difficulty').addEventListener('click', backToDifficulty);
+ document.getElementById('restart-game').addEventListener('click', restartGame);
+const translations = {
+    en: { 
+        gameTitle: 'Logic Game',
+        question: 'Question',
+        correct: 'Correct!',
+        incorrect: 'Incorrect!',
+        score: 'Your Score',
+        correctAnswers: 'Correct Answers',
+        incorrectAnswers: 'Incorrect Answers',
+        restartGame: 'Restart Game',
+        backToDifficulty: 'Back to Difficulty',
+        questions: [
+            { q: 'What is 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: 'What is the capital of France?', o: ['Berlin', 'Madrid', 'Paris'], a: 2 },
+        ]
+    },
+    fr: { 
+        gameTitle: 'Jeu de Logique',
+        question: 'Question',
+        correct: 'Correct !',
+        incorrect: 'Incorrect !',
+        score: 'Votre Score',
+        correctAnswers: 'Réponses Correctes',
+        incorrectAnswers: 'Réponses Incorrectes',
+        restartGame: 'Recommencer le Jeu',
+        backToDifficulty: 'Retour à la Difficulté',
+        questions: [
+    { "q": "Un homme est dans une pièce avec trois interrupteurs. L'un d'eux contrôle une ampoule dans une autre pièce. Vous pouvez aller dans la pièce de l'ampoule une seule fois. Comment pouvez-vous déterminer quel interrupteur contrôle l'ampoule ?", "o": ["En allumant un interrupteur et en attendant un moment, puis en vérifiant l'état de l'ampoule", "En allumant tous les interrupteurs et en allant vérifier l'ampoule", "En éteignant tous les interrupteurs et en vérifiant l'ampoule"], "a": 0 },
+    { "q": "Il y a trois boîtes. Une contient uniquement des pommes, une contient uniquement des oranges, et la troisième contient à la fois des pommes et des oranges. Les boîtes sont mal étiquetées. Vous pouvez prendre un seul fruit de n'importe quelle boîte. Comment pouvez-vous étiqueter correctement toutes les boîtes ?", "o": ["En prenant un fruit de la boîte étiquetée 'Pommes et Oranges' et en étiquetant correctement toutes les boîtes", "En prenant un fruit de la boîte étiquetée 'Pommes' et en étiquetant toutes les boîtes", "En prenant un fruit de la boîte étiquetée 'Oranges' et en étiquetant toutes les boîtes"], "a": 0 },
+    { "q": "Une pièce est divisée en deux parties par une porte fermée. Un voleur est dans la pièce avec un gardien, mais le voleur ne sait pas s'il est dans la partie A ou B de la pièce. Le gardien sait dans quelle partie se trouve le voleur, mais il ne peut pas dire où il est. Comment peut-il indiquer au voleur s'il est dans la partie A ou B ?", "o": ["En disant au voleur d'attendre un moment et de se déplacer vers la porte", "En faisant passer un objet à travers la porte", "En demandant au voleur de se déplacer dans la pièce et en écoutant"], "a": 1 },
+    { "q": "Une famille a deux enfants. L'un d'eux est un garçon né un mardi. Quelle est la probabilité que l'autre enfant soit également un garçon ?", "o": ["1/2", "1/3", "1/4"], "a": 1 },
+    { "q": "Vous avez un sac contenant 10 billes rouges et 10 billes bleues. Vous devez en tirer 6 billes au hasard sans regarder. Quelle est la probabilité d'avoir exactement 3 billes rouges et 3 billes bleues ?", "o": ["1/2", "1/3", "1/4"], "a": 0 },
+    { "q": "Vous êtes dans une pièce avec 100 ampoules numérotées de 1 à 100. Toutes les ampoules sont éteintes. Vous effectuez les opérations suivantes : vous commencez avec toutes les ampoules éteintes. Ensuite, vous faites passer l'état de chaque ampoule (de l'allumée à l'éteinte ou de l'éteinte à l'allumée) chaque fois que son numéro est un multiple de 1. Ensuite, vous faites passer l'état de chaque ampoule chaque fois que son numéro est un multiple de 2, puis de 3, et ainsi de suite jusqu'à 100. Quel sera l'état final de l'ampoule numéro 50 ?", "o": ["Allumée", "Éteinte", "Inconnue"], "a": 1 },
+    { "q": "Un fermier doit traverser une rivière avec un loup, une chèvre et un chou. Il a une petite barque qui ne peut transporter que lui-même et un autre élément à la fois. S'il laisse le loup avec la chèvre sans lui, le loup mangera la chèvre. S'il laisse la chèvre avec le chou sans lui, la chèvre mangera le chou. Comment le fermier peut-il traverser la rivière en toute sécurité avec tous les éléments ?", "o": ["En transportant la chèvre en premier, puis en revenant chercher le loup, puis en revenant chercher le chou", "En transportant le chou en premier, puis en revenant chercher la chèvre, puis en revenant chercher le loup", "En transportant le loup en premier, puis en revenant chercher la chèvre, puis en revenant chercher le chou"], "a": 1 },
+    { "q": "Un homme est trouvé pendu dans une pièce fermée de l'intérieur, avec un tabouret renversé sous lui. La pièce n'a ni fenêtres ni portes, à l'exception de la porte verrouillée de l'extérieur. Comment l'homme s'est-il pendu ?", "o": ["Il s'est pendu avec une corde accrochée à une poutre", "Il a utilisé une échelle pour se pendre", "Il a utilisé un mécanisme caché"], "a": 2 },
+    { "q": "Vous avez trois seaux. Le premier seau peut contenir 3 litres d'eau, le deuxième 5 litres et le troisième 8 litres. Comment pouvez-vous mesurer exactement 4 litres d'eau en utilisant ces seaux ?", "o": ["En remplissant le seau de 5 litres et en versant de l'eau dans le seau de 3 litres jusqu'à ce qu'il soit plein", "En remplissant le seau de 3 litres et en versant de l'eau dans le seau de 5 litres jusqu'à ce qu'il soit plein", "En remplissant le seau de 8 litres et en versant de l'eau dans les seaux de 5 et 3 litres"], "a": 0 },
+    { "q": "Vous avez un sac avec 9 boules, 4 rouges et 5 vertes. Vous tirez au hasard 3 boules sans regarder. Quelle est la probabilité que vous tiriez au moins une boule rouge ?", "o": ["1/2", "5/9", "7/9"], "a": 2 },
+    { "q": "Vous êtes dans un couloir avec deux portes. Une porte mène à la liberté et l'autre à la mort. Vous ne savez pas laquelle est laquelle. Devant chaque porte se tient un gardien. Un gardien dit toujours la vérité et l'autre ment toujours. Vous ne pouvez poser qu'une seule question à l'un des gardiens. Quelle question devez-vous poser pour savoir quelle porte mène à la liberté ?", "o": ["Demander à l'un des gardiens quelle porte l'autre gardien dirait que mène à la liberté", "Demander à l'un des gardiens de quelle couleur est la porte", "Demander à l'un des gardiens quel est son nom"], "a": 0 },
+    { "q": "Vous avez une pièce contenant cinq objets : une corde, un pistolet, une boîte de dynamite, une boîte de clous et une boîte de vis. Vous avez besoin d'ouvrir une boîte verrouillée, mais vous ne pouvez utiliser qu'un seul objet pour l'ouvrir. Quel objet utiliseriez-vous ?", "o": ["La corde", "Le pistolet", "La boîte de dynamite"], "a": 2 },
+    { "q": "Une personne rencontre deux individus. L'un d'eux ment toujours et l'autre dit toujours la vérité. La personne demande à l'un des individus : 'Si je demandais à l'autre individu quelle est la direction de la sortie, que me répondrait-il ?' Quelle réponse doit-elle suivre pour trouver la sortie ?", "o": ["Suivre la direction indiquée par l'individu interrogé", "Suivre la direction opposée à celle indiquée", "Demander à l'autre individu"], "a": 1 },
+    { "q": "Une personne a une boîte avec 100 pièces de monnaie. Certaines sont face et d'autres sont pile. Il sait que 50 pièces sont face et 50 pièces sont pile. Comment peut-elle séparer les pièces en deux groupes de 50 pièces chacun de manière à ce que chaque groupe ait le même nombre de pièces face et pile ?", "o": ["En séparant les pièces au hasard en deux groupes", "En tournant toutes les pièces d'un groupe", "En mélangeant les pièces de chaque groupe"], "a": 1 },
+    { "q": "Vous êtes dans une pièce avec trois interrupteurs, chacun contrôlant une ampoule dans une autre pièce. Vous pouvez manipuler les interrupteurs comme vous le souhaitez, mais vous ne pouvez vérifier l'état des ampoules qu'une seule fois. Comment pouvez-vous déterminer quel interrupteur contrôle quelle ampoule ?", "o": ["Allumer un interrupteur, attendre un moment, éteindre et vérifier l'ampoule", "Allumer tous les interrupteurs et vérifier les ampoules", "Allumer les interrupteurs un par un et vérifier les ampoules"], "a": 0 },
+    { "q": "Il y a cinq maisons alignées le long d'une rue, chacune peinte d'une couleur différente. Chaque maison est habitée par une personne de nationalité différente, et chaque personne boit une boisson différente, fume une marque différente de cigarettes et a un animal différent. Le but est de déterminer qui possède le poisson. Vous avez les indices suivants :\n- La maison jaune est habitée par le Norvégien qui fume des Dunhill.\n- La maison bleue est juste à gauche de la maison blanche.\n- Le Danois boit du thé.\n- La maison rouge est habitée par l'Anglais.\n- L'Allemand fume des Prince.\n- Le Norvégien vit juste à côté de la maison bleue.\n- Le fumeur de blend vit à côté de la maison où l'on boit de l'eau.\n- La maison verte est à gauche de la maison blanche, et l'Italien boit du café.\n- Le fumeur de Pall Mall a des oiseaux.\n- La maison du milieu boit du lait.\nQui possède le poisson ?", "o": ["L'Anglais", "Le Danois", "L'Allemand"], "a": 2 },
+    { "q": "Une pièce contient 10 boules rouges et 10 boules bleues. Vous devez en tirer 10 boules au hasard. Quelle est la probabilité d'avoir au moins 5 boules rouges ?", "o": ["1/2", "1/3", "1/4"], "a": 0 },
+    { "q": "Une boîte contient 100 balles : 30 sont rouges, 30 sont bleues et 40 sont vertes. Vous devez tirer 5 balles au hasard. Quelle est la probabilité d'avoir exactement 2 balles rouges, 2 balles bleues et 1 balle verte ?", "o": ["1/5", "1/10", "1/15"], "a": 1 },
+    { "q": "Un fermier a 6 sacs. Chaque sac contient des billes, certaines rouges et d'autres bleues. Les sacs sont étiquetés avec le nombre de billes rouges et bleues qu'ils contiennent, mais les étiquettes sont toutes incorrectes. Le fermier peut choisir un seul sac et en tirer une bille pour déterminer combien de billes rouges et bleues sont dans chaque sac. Quel sac doit-il choisir pour étiqueter correctement tous les sacs ?", "o": ["Le sac étiqueté 'Rouge' ou 'Bleu'", "Le sac étiqueté 'Rouge et Bleu'", "Le sac étiqueté 'Inconnu'"], "a": 0 },
+    { "q": "Une personne entre dans une pièce où se trouvent deux interrupteurs, l'un contrôlant une ampoule et l'autre une ventilation. Vous pouvez manipuler les interrupteurs comme vous le souhaitez, mais vous ne pouvez vérifier l'état de l'ampoule et de la ventilation qu'une seule fois. Comment pouvez-vous déterminer quel interrupteur contrôle l'ampoule et quel interrupteur contrôle la ventilation ?", "o": ["Allumer un interrupteur, attendre un moment, éteindre et vérifier l'ampoule", "Allumer les deux interrupteurs et vérifier l'état de la ventilation", "Allumer un interrupteur, attendre un moment, éteindre et vérifier la ventilation"], "a": 0 },
+    { "q": "Il y a une boîte avec 10 pièces de monnaie, 5 avec face et 5 avec pile. Vous pouvez voir seulement une face des pièces sans les toucher. Comment pouvez-vous diviser les pièces en deux groupes de manière à ce que chaque groupe ait le même nombre de pièces avec face et pile ?", "o": ["En divisant les pièces en deux groupes au hasard", "En retournant toutes les pièces d'un groupe", "En choisissant un groupe de 5 pièces et en les retournant"], "a": 2 },
+    { "q": "Un magicien a 3 cartes : une rouge, une bleue et une verte. Il les place face cachée sur la table. Vous devez déterminer la couleur de chaque carte en posant des questions qui ne peuvent être répondues que par 'oui' ou 'non'. Quel est le nombre minimum de questions nécessaires pour identifier correctement la couleur de chaque carte ?", "o": ["2", "3", "4"], "a": 1 },
+    { "q": "Un boxeur et un lutteur ont des poids différents. Le boxeur pèse 60 kg et le lutteur pèse 70 kg. Ils ont tous les deux des sacs de poids différents, mais le boxeur a 5 kg de plus dans son sac que le lutteur. Si le sac du boxeur pèse 10 kg, quel est le poids du sac du lutteur ?", "o": ["5 kg", "10 kg", "15 kg"], "a": 1 },
+    { "q": "Vous avez un sac avec 3 sortes de bonbons : 4 rouges, 6 bleus et 8 verts. Vous tirez au hasard 4 bonbons sans regarder. Quelle est la probabilité que vous tiriez exactement 2 bonbons rouges, 1 bonbon bleu et 1 bonbon vert ?", "o": ["1/5", "1/10", "1/15"], "a": 0 },
+    { "q": "Une boîte contient 100 billes : 20 rouges, 30 bleues et 50 vertes. Vous devez tirer 7 billes au hasard. Quelle est la probabilité d'obtenir au moins 2 billes rouges ?", "o": ["1/4", "1/3", "1/2"], "a": 2 },
+    { "q": "Un joueur joue à un jeu où il doit lancer un dé à 6 faces. Il gagne s'il obtient un nombre pair. Quelle est la probabilité qu'il gagne au moins une fois après avoir lancé le dé 3 fois ?", "o": ["1/2", "2/3", "5/6"], "a": 2 },
+    { "q": "Un labyrinthe a la forme d'un carré avec des murs. Vous êtes dans un coin du labyrinthe et devez atteindre le coin opposé en suivant les chemins libres. Quelle est la méthode la plus efficace pour trouver le chemin ? (Réponse en termes de stratégie)", "o": ["Suivre toujours le mur gauche", "Suivre toujours le mur droit", "Utiliser un algorithme de recherche en largeur"], "a": 2 },
+    { "q": "Vous avez un sac avec 10 boules rouges et 10 boules bleues. Vous devez tirer 8 boules au hasard sans regarder. Quelle est la probabilité d'avoir exactement 4 boules rouges et 4 boules bleues ?", "o": ["1/5", "1/6", "1/7"], "a": 0 },
+    { "q": "Une personne a 4 boîtes : une contenant des pommes, une des oranges, une des pommes et des oranges, et une boîte vide. Les boîtes sont mal étiquetées. Vous pouvez prendre un fruit d'une boîte pour identifier les étiquettes correctement. Quelle est la méthode pour le faire ?", "o": ["Prendre un fruit de la boîte étiquetée 'Pommes et Oranges'", "Prendre un fruit de la boîte étiquetée 'Pommes'", "Prendre un fruit de la boîte étiquetée 'Oranges'"], "a": 0 },
+    { "q": "Vous avez une boîte avec 5 balles rouges, 7 balles bleues et 8 balles vertes. Vous tirez au hasard 6 balles sans regarder. Quelle est la probabilité d'avoir exactement 3 balles rouges et 3 balles bleues ?", "o": ["1/10", "1/12", "1/15"], "a": 1 },
+    { "q": "Un joueur doit traverser un pont où se trouvent des gardiens. Un gardien est toujours honnête, l'autre est toujours menteur. Vous pouvez poser une seule question pour savoir quel gardien est honnête. Quelle question posez-vous ?", "o": ["'Si je demandais à l'autre gardien de me dire la vérité, que dirait-il ?'", "'Quel est votre nom ?'", "'Quelle est la direction de la sortie ?'"], "a": 0 },
+    { "q": "Vous avez une boîte avec 50 billes rouges et 50 billes bleues. Vous tirez 10 billes au hasard. Quelle est la probabilité d'obtenir exactement 5 billes rouges et 5 billes bleues ?", "o": ["1/5", "1/6", "1/7"], "a": 1 },
+    { "q": "Un boxeur et un lutteur doivent faire des paris sur leurs poids. Le boxeur est plus léger de 10 kg que le lutteur, mais le boxeur a un sac de 15 kg de plus que le lutteur. Quel est le poids du sac du boxeur ?", "o": ["5 kg", "10 kg", "15 kg"], "a": 2 },
+    { "q": "Vous avez une boîte avec 20 billes rouges et 30 billes bleues. Vous tirez 4 billes au hasard sans regarder. Quelle est la probabilité d'obtenir exactement 2 billes rouges et 2 billes bleues ?", "o": ["1/10", "1/12", "1/15"], "a": 1 }
+
+        ]
+		
+    },
+    es: {
+        gameTitle: 'Juego de Lógica',
+        question: 'Pregunta',
+        correct: '¡Correcto!',
+        incorrect: '¡Incorrecto!',
+        score: 'Tu Puntaje',
+        correctAnswers: 'Respuestas Correctas',
+        incorrectAnswers: 'Respuestas Incorrectas',
+        restartGame: 'Reiniciar Juego',
+        backToDifficulty: 'Volver a la Dificultad',
+        questions: [
+            { q: '¿Cuánto es 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: '¿Cuál es la capital de Francia?', o: ['Berlín', 'Madrid', 'París'], a: 2 },
+        ]
+    },
+    de: {
+        gameTitle: 'Logikspiel',
+        question: 'Frage',
+        correct: 'Richtig!',
+        incorrect: 'Falsch!',
+        score: 'Dein Punktestand',
+        correctAnswers: 'Richtige Antworten',
+        incorrectAnswers: 'Falsche Antworten',
+        restartGame: 'Spiel Neu Starten',
+        backToDifficulty: 'Zurück zur Schwierigkeit',
+        questions: [
+            { q: 'Wie viel ist 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: 'Wie heißt die Hauptstadt von Frankreich?', o: ['Berlin', 'Madrid', 'Paris'], a: 2 },
+        ]
+    },
+    it: {
+        gameTitle: 'Gioco di Logica',
+        question: 'Domanda',
+        correct: 'Corretto!',
+        incorrect: 'Sbagliato!',
+        score: 'Il Tuo Punteggio',
+        correctAnswers: 'Risposte Corrette',
+        incorrectAnswers: 'Risposte Sbagliate',
+        restartGame: 'Ricomincia Il Gioco',
+        backToDifficulty: 'Torna alla Difficoltà',
+        questions: [
+            { q: 'Quanto fa 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: 'Qual è la capitale della Francia?', o: ['Berlino', 'Madrid', 'Parigi'], a: 2 },
+        ]
+    },
+    pt: {
+        gameTitle: 'Jogo de Lógica',
+        question: 'Pergunta',
+        correct: 'Correto!',
+        incorrect: 'Incorreto!',
+        score: 'Sua Pontuação',
+        correctAnswers: 'Respostas Corretas',
+        incorrectAnswers: 'Respostas Incorretas',
+        restartGame: 'Reiniciar Jogo',
+        backToDifficulty: 'Voltar à Dificuldade',
+        questions: [
+            { q: 'Quanto é 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: 'Qual é a capital da França?', o: ['Berlim', 'Madri', 'Paris'], a: 2 },
+        ]
+    },
+    ru: {
+        gameTitle: 'Логическая Игра',
+        question: 'Вопрос',
+        correct: 'Правильно!',
+        incorrect: 'Неправильно!',
+        score: 'Ваш Балл',
+        correctAnswers: 'Правильные Ответы',
+        incorrectAnswers: 'Неправильные Ответы',
+        restartGame: 'Начать Заново',
+        backToDifficulty: 'Назад к Уровню Сложности',
+        questions: [
+            { q: 'Сколько будет 2 + 2?', o: ['3', '4', '5'], a: 1 },
+            { q: 'Какая столица Франции?', o: ['Берлин', 'Мадрид', 'Париж'], a: 2 },
+        ]
+    },
+    zh: {
+        gameTitle: '逻辑游戏',
+        question: '问题',
+        correct: '正确！',
+        incorrect: '错误！',
+        score: '你的分数',
+        correctAnswers: '正确回答',
+        incorrectAnswers: '错误回答',
+        restartGame: '重新开始',
+        backToDifficulty: '返回难度选择',
+        questions: [
+            { q: '2 + 2 等于多少？', o: ['3', '4', '5'], a: 1 },
+            { q: '法国的首都是什么？', o: ['柏林', '马德里', '巴黎'], a: 2 },
+        ]
+    },
+    ja: {
+        gameTitle: '論理ゲーム',
+        question: '質問',
+        correct: '正解！',
+        incorrect: '不正解！',
+        score: 'あなたのスコア',
+        correctAnswers: '正しい回答',
+        incorrectAnswers: '間違った回答',
+        restartGame: 'ゲームを再起動',
+        backToDifficulty: '難易度に戻る',
+        questions: [
+            { q: '2 + 2 はいくつですか？', o: ['3', '4', '5'], a: 1 },
+            { q: 'フランスの首都はどこですか？', o: ['ベルリン', 'マドリード', 'パリ'], a: 2 },
+        ]
+    },
+    ko: {
+        gameTitle: '논리 게임',
+        question: '질문',
+        correct: '정답입니다!',
+        incorrect: '오답입니다!',
+        score: '당신의 점수',
+        correctAnswers: '정답 개수',
+        incorrectAnswers: '오답 개수',
+        restartGame: '게임 재시작',
+        backToDifficulty: '난이도로 돌아가기',
+        questions: [
+            { q: '2 + 2는 얼마입니까?', o: ['3', '4', '5'], a: 1 },
+            { q: '프랑스의 수도는 어디입니까?', o: ['베를린', '마드리드', '파리'], a: 2 },
+        ]
+    },
+    ar: {
+        gameTitle: 'لعبة المنطق',
+        question: 'سؤال',
+        correct: 'صحيح!',
+        incorrect: 'خطأ!',
+        score: 'نتيجتك',
+        correctAnswers: 'الإجابات الصحيحة',
+        incorrectAnswers: 'الإجابات الخاطئة',
+        restartGame: 'إعادة تشغيل اللعبة',
+        backToDifficulty: 'العودة إلى مستوى الصعوبة',
+        questions: [
+            { q: 'ما هو 2 + 2؟', o: ['3', '4', '5'], a: 1 },
+            { q: 'ما هي عاصمة فرنسا؟', o: ['برلين', 'مدريد', 'باريس'], a: 2 },
+        ]
+    }
+};
+
+
+
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        const totalQuestions = 30; // Adjust according to the number of questions
+
+        function startGame() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questions = translations[lang].questions;
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('gameTitle').innerText = translations[lang].gameTitle;
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questionData = translations[lang].questions[currentQuestionIndex];
+            if (!questionData) {
+                showScore();
+                return;
+            }
+            document.getElementById('question').innerText = questionData.q;
+            document.getElementById('options').innerHTML = questionData.o.map((option, index) => 
+                `<button onclick="selectAnswer(${index})">${option}</button>`
+            ).join('');
+            document.getElementById('feedback').innerText = '';
+        }
+
+      function selectAnswer(index) {
+    const lang = localStorage.getItem('language') || 'en';
+    const questionData = translations[lang].questions[currentQuestionIndex];
+    if (index === questionData.a) {
+        document.getElementById('feedback').innerText = translations[lang].correct;
+        document.getElementById('feedback').className = 'feedback-correct'; // Applique la classe correcte
+        correctAnswers++;
+        showConfetti();
+    } else {
+        document.getElementById('feedback').innerText = translations[lang].incorrect;
+        document.getElementById('feedback').className = 'feedback-incorrect'; // Applique la classe incorrecte
+        incorrectAnswers++;
+        shakeScreen();
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < totalQuestions) {
+        setTimeout(displayQuestion, 1000); // Delay to show feedback before moving to the next question
+    } else {
+        setTimeout(showScore, 1000); // Delay to show feedback before showing the score
+    }
+}
+
+
+        function showScore() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('score-container').style.display = 'block';
+            const lang = localStorage.getItem('language') || 'en';
+            document.getElementById('score-text').innerText = `${translations[lang].score}: ${correctAnswers}`;
+            document.getElementById('correct-answers-text').innerText = `${translations[lang].correctAnswers}: ${correctAnswers}`;
+            document.getElementById('incorrect-answers-text').innerText = `${translations[lang].incorrectAnswers}: ${incorrectAnswers}`;
+			   document.getElementById('back-to-difficulty').innerText = translations[lang].backToDifficulty; // Met à jour le texte du bouton
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            document.getElementById('score-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            displayQuestion();
+        }
+
+        function showConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function shakeScreen() {
+            const body = document.body;
+            body.classList.add('shake');
+            setTimeout(() => body.classList.remove('shake'), 500); // Duration of shake effect
+        }
+
+       
+	
+
+        // Set the language to English by default
+        localStorage.setItem('language', localStorage.getItem('language') || 'en');
+        startGame();
+		
+		
+    </script>
+</body>
+</html>

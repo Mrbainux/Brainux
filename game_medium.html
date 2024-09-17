@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Game</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+    <style>
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="gameTitle"></h1>
+        <div id="game-container" style="display: none;">
+            <div id="question-container">
+                <p id="question"></p>
+                <div id="options"></div>
+            </div>
+            <div id="feedback"></div>
+            <div id="score-container" style="display: none;">
+                <p id="score-text"></p>
+                <p id="correct-answers-text"></p>
+                <p id="incorrect-answers-text"></p>
+                
+				<button id="back-to-difficulty"></button> 
+				 <button id="restart-game" onclick="restartGame()">
+				 <i class="fas fa-redo"></i> 
+				 <span class="material-icons"></span> </button>
+            </div>
+        </div>
+ <button id="backk" onclick="backk()">
+				 <i class="fas fa-arrow-left"></i>
+				 <span class="material-icons"></span> </button>
+    </div>
+	
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+    <script>
+	function backToDifficulty() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+
+function backk() {
+    // Ici, tu devras rediriger l'utilisateur vers la page de sélection de la difficulté.
+    // Assure-toi que cette page existe et est correctement configurée.
+    window.location.href = 'difficulty.html'; // Modifie ce lien en fonction du nom de ta page de difficulté
+	
+
+}
+document.getElementById('back-to-difficulty').addEventListener('click', backToDifficulty);
+ document.getElementById('restart-game').addEventListener('click', restartGame);
+const translations = {
+    en: { 
+        gameTitle: 'Logic Game',
+        question: 'Question',
+        correct: 'Correct!',
+        incorrect: 'Incorrect!',
+        score: 'Your Score',
+        correctAnswers: 'Correct Answers',
+        incorrectAnswers: 'Incorrect Answers',
+        restartGame: 'Restart Game',
+        backToDifficulty: 'Back to Difficulty',
+        questions: [
+  
+        { "q": "If 4 people can build a wall in 6 hours, how long would it take 8 people to build the same wall, assuming they work at the same rate?", "o": ["3 hours", "4 hours", "6 hours"], "a": 0 },
+        { "q": "A farmer has 10 hens. Each hen lays 1 egg per day. How many eggs will the hens lay in 1 week?", "o": ["70 eggs", "60 eggs", "50 eggs"], "a": 0 },
+        { "q": "What is the missing number in the following sequence: 2, 5, 10, 17?", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "If a box contains 5 red balls and 3 green balls, what is the probability of drawing a red ball at random?", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "A train departs at 2:00 PM and arrives at 6:15 PM. What is the duration of the trip?", "o": ["4 hours 15 minutes", "4 hours 45 minutes", "4 hours 30 minutes"], "a": 0 },
+        { "q": "If a rectangle has a length of 10 units and a width of 5 units, what is the area of the rectangle?", "o": ["30 square units", "50 square units", "60 square units"], "a": 1 },
+        { "q": "In a class, 60% of the students are girls. If the class has 30 students, how many are boys?", "o": ["10", "12", "18"], "a": 2 },
+        { "q": "A book has 200 pages. If you read 25 pages each day, how many days will it take to read the book?", "o": ["7 days", "8 days", "9 days"], "a": 1 },
+        { "q": "If you add 8 to a number and divide the result by 4, you get 7. What is the original number?", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "What is the result of 12 + (8 × 2) - 6?", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "If a box contains 3 red balls, 2 green balls, and 5 blue balls, what fraction of the balls are red?", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "If you add 1 to 1 and then multiply by 2, what is the result?", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "If a clock shows 3:15, what is the angle between the hour and minute hands?", "o": ["30 degrees", "37.5 degrees", "45 degrees"], "a": 1 },
+        { "q": "A puzzle piece is missing from a 50-piece puzzle. How many pieces are left?", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "If a triangle has two angles measuring 45 degrees each, what is the measure of the third angle?", "o": ["90 degrees", "45 degrees", "60 degrees"], "a": 0 },
+        { "q": "In a group of 12 people, if 8 are women, how many men are there?", "o": ["4", "5", "6"], "a": 0 },
+        { "q": "A box contains 10 red balls and 20 blue balls. What is the ratio of red balls to blue balls?", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "If you roll a six-sided die, what is the probability of rolling a number greater than 4?", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "If you add 10 to 50 and divide the result by 5, what is the result?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "What is the product of 7 and 8?", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "What is the sum of the angles in a triangle?", "o": ["180 degrees", "360 degrees", "90 degrees"], "a": 0 },
+        { "q": "A rectangle has a length of 8 units and a width of 3 units. What is its perimeter?", "o": ["22 units", "24 units", "18 units"], "a": 0 },
+        { "q": "If a train travels at 60 km/h, how long will it take to cover 180 km?", "o": ["2 hours", "3 hours", "4 hours"], "a": 1 },
+        { "q": "What is the square of 9?", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "What is the difference between 100 and 45?", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "If you divide 72 by 8, what is the result?", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "What is the quotient of 144 divided by 12?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "What is the result of 20 - (5 × 3)?", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "If a pizza is cut into 8 equal slices and you eat 3, how many slices are left?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "If you add 6 to 7 and subtract 4, what is the result?", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "What is the product of 5 and 6?", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "What is the sum of 14 and 9?", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "If you subtract 8 from 30, what is the result?", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "What is the result of 15 ÷ 3?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "What is the sum of 11 and 5?", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "If you add 7 to 18 and subtract 9, what is the result?", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "What is the product of 4 and 7?", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "What is the result of 18 - (2 × 4)?", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "If you have 3 groups of 5 items, how many items do you have in total?", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "What is the number of hours in 3 days?", "o": ["72 hours", "48 hours", "24 hours"], "a": 0 }
+
+
+        ]
+    },
+    fr: { 
+        gameTitle: 'Jeu de Logique',
+        question: 'Question',
+        correct: 'Correct !',
+        incorrect: 'Incorrect !',
+        score: 'Votre Score',
+        correctAnswers: 'Réponses Correctes',
+        incorrectAnswers: 'Réponses Incorrectes',
+        restartGame: 'Recommencer le Jeu',
+        backToDifficulty: 'Retour à la Difficulté',
+        questions: [
+
+        { "q": "Si 4 personnes peuvent construire un mur en 6 heures, combien de temps mettraient 8 personnes pour construire le même mur, en supposant qu'elles travaillent à la même vitesse ?", "o": ["3 heures", "4 heures", "6 heures"], "a": 0 },
+        { "q": "Un fermier a 10 poules. Chaque poule pond 1 œuf par jour. Combien d'œufs auront les poules pondus en 1 semaine ?", "o": ["70 œufs", "60 œufs", "50 œufs"], "a": 0 },
+        { "q": "Quel est le nombre manquant dans la séquence suivante : 2, 5, 10, 17, ?", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "Si une boîte contient 5 billes rouges et 3 billes vertes, quelle est la probabilité de tirer une bille rouge au hasard ?", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "Un train part à 14h00 et arrive à 18h15. Quelle est la durée du voyage ?", "o": ["4 heures 15 minutes", "4 heures 45 minutes", "4 heures 30 minutes"], "a": 0 },
+        { "q": "Si un rectangle a une longueur de 10 unités et une largeur de 5 unités, quelle est la superficie du rectangle ?", "o": ["30 unités carrées", "50 unités carrées", "60 unités carrées"], "a": 1 },
+        { "q": "Dans une classe, 60% des élèves sont des filles. Si la classe compte 30 élèves, combien y a-t-il de garçons ?", "o": ["10", "12", "18"], "a": 2 },
+        { "q": "Un livre a 200 pages. Si vous lisez 25 pages chaque jour, combien de jours vous faudra-t-il pour lire le livre ?", "o": ["7 jours", "8 jours", "9 jours"], "a": 1 },
+        { "q": "Si vous ajoutez 8 à un nombre et divisez le résultat par 4, vous obtenez 7. Quel est le nombre initial ?", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "Quel est le résultat de 12 + (8 × 2) - 6 ?", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "Si une boîte contient 3 balles rouges, 2 balles vertes et 5 balles bleues, quelle fraction des balles sont rouges ?", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "Si vous ajoutez 1 à 1, puis multipliez par 2, quel est le résultat ?", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "Si une horloge indique 15h15, quel est l’angle entre les aiguilles des heures et des minutes ?", "o": ["30 degrés", "37,5 degrés", "45 degrés"], "a": 1 },
+        { "q": "Une pièce est manquante dans un puzzle de 50 pièces. Combien de pièces restent ?", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "Si un triangle a deux angles mesurant 45 degrés chacun, quelle est la mesure du troisième angle ?", "o": ["90 degrés", "45 degrés", "60 degrés"], "a": 0 },
+        { "q": "Dans un groupe de 12 personnes, si 8 sont des femmes, combien y a-t-il d’hommes ?", "o": ["4", "5", "6"], "a": 0 },
+        { "q": "Une boîte contient 10 balles rouges et 20 balles bleues. Quel est le rapport entre les balles rouges et les balles bleues ?", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "Si vous lancez un dé à six faces, quelle est la probabilité d’obtenir un nombre supérieur à 4 ?", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "Si vous ajoutez 10 à 50 et divisez le résultat par 5, quel est le résultat ?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "Quel est le produit de 7 et 8 ?", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "Quelle est la somme des angles dans un triangle ?", "o": ["180 degrés", "360 degrés", "90 degrés"], "a": 0 },
+        { "q": "Un rectangle a une longueur de 8 unités et une largeur de 3 unités. Quel est son périmètre ?", "o": ["22 unités", "24 unités", "18 unités"], "a": 0 },
+        { "q": "Si un train voyage à 60 km/h, combien de temps mettra-t-il pour parcourir 180 km ?", "o": ["2 heures", "3 heures", "4 heures"], "a": 1 },
+        { "q": "Quel est le carré de 9 ?", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "Quelle est la différence entre 100 et 45 ?", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "Si vous divisez 72 par 8, quel est le résultat ?", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "Quel est le quotient de 144 divisé par 12 ?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "Quel est le résultat de 20 - (5 × 3) ?", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "Si une pizza est coupée en 8 parts égales et que vous en mangez 3, combien de parts restent ?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "Si vous ajoutez 6 à 7 et soustrayez 4, quel est le résultat ?", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "Quel est le produit de 5 et 6 ?", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "Quelle est la somme de 14 et 9 ?", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "Si vous soustrayez 8 de 30, quel est le résultat ?", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "Quel est le résultat de 15 ÷ 3 ?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "Quelle est la somme de 11 et 5 ?", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "Si vous ajoutez 7 à 18 et soustrayez 9, quel est le résultat ?", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "Quel est le produit de 4 et 7 ?", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "Quel est le résultat de 18 - (2 × 4) ?", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "Si vous avez 3 groupes de 5 objets, combien d'objets avez-vous au total ?", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "Quel est le nombre d'heures dans 3 jours ?", "o": ["72 heures", "48 heures", "24 heures"], "a": 0 }
+   
+        ]
+    },
+    es: {
+        gameTitle: 'Juego de Lógica',
+        question: 'Pregunta',
+        correct: '¡Correcto!',
+        incorrect: '¡Incorrecto!',
+        score: 'Tu Puntaje',
+        correctAnswers: 'Respuestas Correctas',
+        incorrectAnswers: 'Respuestas Incorrectas',
+        restartGame: 'Reiniciar Juego',
+        backToDifficulty: 'Volver a la Dificultad',
+        questions: [
+        { "q": "Si 4 personas pueden construir una pared en 6 horas, ¿cuánto tiempo tardarían 8 personas en construir la misma pared, suponiendo que trabajan a la misma velocidad?", "o": ["3 horas", "4 horas", "6 horas"], "a": 0 },
+        { "q": "Un granjero tiene 10 gallinas. Cada gallina pone 1 huevo por día. ¿Cuántos huevos pondrán las gallinas en 1 semana?", "o": ["70 huevos", "60 huevos", "50 huevos"], "a": 0 },
+        { "q": "¿Cuál es el número faltante en la siguiente secuencia: 2, 5, 10, 17?", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "Si una caja contiene 5 bolas rojas y 3 bolas verdes, ¿cuál es la probabilidad de sacar una bola roja al azar?", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "Un tren sale a las 2:00 PM y llega a las 6:15 PM. ¿Cuál es la duración del viaje?", "o": ["4 horas 15 minutos", "4 horas 45 minutos", "4 horas 30 minutos"], "a": 0 },
+        { "q": "Si un rectángulo tiene una longitud de 10 unidades y un ancho de 5 unidades, ¿cuál es el área del rectángulo?", "o": ["30 unidades cuadradas", "50 unidades cuadradas", "60 unidades cuadradas"], "a": 1 },
+        { "q": "En una clase, el 60% de los estudiantes son chicas. Si la clase tiene 30 estudiantes, ¿cuántos son chicos?", "o": ["10", "12", "18"], "a": 2 },
+        { "q": "Un libro tiene 200 páginas. Si lees 25 páginas cada día, ¿cuántos días te llevará leer el libro?", "o": ["7 días", "8 días", "9 días"], "a": 1 },
+        { "q": "Si añades 8 a un número y divides el resultado por 4, obtienes 7. ¿Cuál es el número original?", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "¿Cuál es el resultado de 12 + (8 × 2) - 6?", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "Si una caja contiene 3 bolas rojas, 2 bolas verdes y 5 bolas azules, ¿qué fracción de las bolas son rojas?", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "Si añades 1 a 1 y luego multiplicas por 2, ¿cuál es el resultado?", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "Si un reloj muestra las 3:15, ¿cuál es el ángulo entre la hora y el minutero?", "o": ["30 grados", "37.5 grados", "45 grados"], "a": 1 },
+        { "q": "Una pieza de rompecabezas está faltando de un rompecabezas de 50 piezas. ¿Cuántas piezas quedan?", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "Si un triángulo tiene dos ángulos de 45 grados cada uno, ¿cuál es la medida del tercer ángulo?", "o": ["90 grados", "45 grados", "60 grados"], "a": 0 },
+        { "q": "En un grupo de 12 personas, si 8 son mujeres, ¿cuántos hombres hay?", "o": ["4", "5", "6"], "a": 0 },
+        { "q": "Una caja contiene 10 bolas rojas y 20 bolas azules. ¿Cuál es la proporción de bolas rojas a bolas azules?", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "Si lanzas un dado de seis caras, ¿cuál es la probabilidad de sacar un número mayor a 4?", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "Si añades 10 a 50 y divides el resultado por 5, ¿cuál es el resultado?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "¿Cuál es el producto de 7 y 8?", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "¿Cuál es la suma de los ángulos en un triángulo?", "o": ["180 grados", "360 grados", "90 grados"], "a": 0 },
+        { "q": "Un rectángulo tiene una longitud de 8 unidades y un ancho de 3 unidades. ¿Cuál es su perímetro?", "o": ["22 unidades", "24 unidades", "18 unidades"], "a": 0 },
+        { "q": "Si un tren viaja a 60 km/h, ¿cuánto tiempo tardará en recorrer 180 km?", "o": ["2 horas", "3 horas", "4 horas"], "a": 1 },
+        { "q": "¿Cuál es el cuadrado de 9?", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "¿Cuál es la diferencia entre 100 y 45?", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "Si divides 72 entre 8, ¿cuál es el resultado?", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "¿Cuál es el cociente de 144 dividido por 12?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "¿Cuál es el resultado de 20 - (5 × 3)?", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "Si una pizza se corta en 8 rebanadas iguales y comes 3, ¿cuántas rebanadas quedan?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "Si añades 6 a 7 y restas 4, ¿cuál es el resultado?", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "¿Cuál es el producto de 5 y 6?", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "¿Cuál es la suma de 14 y 9?", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "Si restas 8 de 30, ¿cuál es el resultado?", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "¿Cuál es el resultado de 15 ÷ 3?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "¿Cuál es la suma de 11 y 5?", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "Si añades 7 a 18 y restas 9, ¿cuál es el resultado?", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "¿Cuál es el producto de 4 y 7?", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "¿Cuál es el resultado de 18 - (2 × 4)?", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "Si tienes 3 grupos de 5 artículos, ¿cuántos artículos tienes en total?", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "¿Cuántas horas hay en 3 días?", "o": ["72 horas", "48 horas", "24 horas"], "a": 0 }
+
+        ]
+    },
+    de: {
+        gameTitle: 'Logikspiel',
+        question: 'Frage',
+        correct: 'Richtig!',
+        incorrect: 'Falsch!',
+        score: 'Dein Punktestand',
+        correctAnswers: 'Richtige Antworten',
+        incorrectAnswers: 'Falsche Antworten',
+        restartGame: 'Spiel Neu Starten',
+        backToDifficulty: 'Zurück zur Schwierigkeit',
+        questions: [
+     
+        { "q": "Wenn 4 Personen eine Wand in 6 Stunden bauen können, wie lange dauert es, wenn 8 Personen dieselbe Wand bauen, vorausgesetzt, sie arbeiten mit derselben Geschwindigkeit?", "o": ["3 Stunden", "4 Stunden", "6 Stunden"], "a": 0 },
+        { "q": "Ein Bauer hat 10 Hühner. Jedes Huhn legt 1 Ei pro Tag. Wie viele Eier legen die Hühner in 1 Woche?", "o": ["70 Eier", "60 Eier", "50 Eier"], "a": 0 },
+        { "q": "Was ist die fehlende Zahl in der folgenden Sequenz: 2, 5, 10, 17?", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "Wenn eine Box 5 rote Bälle und 3 grüne Bälle enthält, wie hoch ist die Wahrscheinlichkeit, einen roten Ball zufällig zu ziehen?", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "Ein Zug fährt um 14:00 Uhr ab und kommt um 18:15 Uhr an. Wie lange dauert die Fahrt?", "o": ["4 Stunden 15 Minuten", "4 Stunden 45 Minuten", "4 Stunden 30 Minuten"], "a": 0 },
+        { "q": "Wenn ein Rechteck eine Länge von 10 Einheiten und eine Breite von 5 Einheiten hat, wie groß ist die Fläche des Rechtecks?", "o": ["30 Quadrat-Einheiten", "50 Quadrat-Einheiten", "60 Quadrat-Einheiten"], "a": 1 },
+        { "q": "In einer Klasse sind 60% der Schüler Mädchen. Wenn die Klasse 30 Schüler hat, wie viele Jungen gibt es?", "o": ["10", "12", "18"], "a": 2 },
+        { "q": "Ein Buch hat 200 Seiten. Wenn Sie jeden Tag 25 Seiten lesen, wie viele Tage benötigen Sie, um das Buch zu lesen?", "o": ["7 Tage", "8 Tage", "9 Tage"], "a": 1 },
+        { "q": "Wenn Sie 8 zu einer Zahl hinzufügen und das Ergebnis durch 4 teilen, erhalten Sie 7. Wie lautet die ursprüngliche Zahl?", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "Was ist das Ergebnis von 12 + (8 × 2) - 6?", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "Wenn eine Box 3 rote Bälle, 2 grüne Bälle und 5 blaue Bälle enthält, welcher Bruchteil der Bälle ist rot?", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "Wenn Sie 1 zu 1 hinzufügen und dann mit 2 multiplizieren, wie lautet das Ergebnis?", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "Wenn eine Uhr 15:15 Uhr zeigt, wie groß ist der Winkel zwischen den Stunden- und Minutenzeigern?", "o": ["30 Grad", "37,5 Grad", "45 Grad"], "a": 1 },
+        { "q": "Ein Puzzle-Stück fehlt aus einem 50-Teile-Puzzle. Wie viele Teile bleiben übrig?", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "Wenn ein Dreieck zwei Winkel von jeweils 45 Grad hat, wie groß ist der dritte Winkel?", "o": ["90 Grad", "45 Grad", "60 Grad"], "a": 0 },
+        { "q": "In einer Gruppe von 12 Personen, wenn 8 Frauen sind, wie viele Männer gibt es?", "o": ["4", "5", "6"], "a": 0 },
+        { "q": "Eine Box enthält 10 rote Bälle und 20 blaue Bälle. Wie lautet das Verhältnis von roten Bällen zu blauen Bällen?", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "Wenn Sie einen Würfel mit sechs Seiten werfen, wie hoch ist die Wahrscheinlichkeit, eine Zahl größer als 4 zu würfeln?", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "Wenn Sie 10 zu 50 hinzufügen und das Ergebnis durch 5 teilen, wie lautet das Ergebnis?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "Was ist das Produkt von 7 und 8?", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "Was ist die Summe der Winkel in einem Dreieck?", "o": ["180 Grad", "360 Grad", "90 Grad"], "a": 0 },
+        { "q": "Ein Rechteck hat eine Länge von 8 Einheiten und eine Breite von 3 Einheiten. Wie groß ist der Umfang?", "o": ["22 Einheiten", "24 Einheiten", "18 Einheiten"], "a": 0 },
+        { "q": "Wenn ein Zug mit 60 km/h fährt, wie lange dauert es, 180 km zurückzulegen?", "o": ["2 Stunden", "3 Stunden", "4 Stunden"], "a": 1 },
+        { "q": "Was ist das Quadrat von 9?", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "Was ist der Unterschied zwischen 100 und 45?", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "Wenn Sie 72 durch 8 teilen, wie lautet das Ergebnis?", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "Was ist der Quotient von 144 geteilt durch 12?", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "Was ist das Ergebnis von 20 - (5 × 3)?", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "Wenn eine Pizza in 8 gleiche Stücke geschnitten ist und Sie 3 gegessen haben, wie viele Stücke bleiben übrig?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "Wenn Sie 6 zu 7 hinzufügen und 4 abziehen, wie lautet das Ergebnis?", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "Was ist das Produkt von 5 und 6?", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "Was ist die Summe von 14 und 9?", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "Wenn Sie 8 von 30 abziehen, wie lautet das Ergebnis?", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "Was ist das Ergebnis von 15 ÷ 3?", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "Was ist die Summe von 11 und 5?", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "Wenn Sie 7 zu 18 hinzufügen und 9 abziehen, wie lautet das Ergebnis?", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "Was ist das Produkt von 4 und 7?", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "Was ist das Ergebnis von 18 - (2 × 4)?", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "Wenn Sie 3 Gruppen von 5 Gegenständen haben, wie viele Gegenstände haben Sie insgesamt?", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "Wie viele Stunden gibt es in 3 Tagen?", "o": ["72 Stunden", "48 Stunden", "24 Stunden"], "a": 0 }
+    
+
+
+        ]
+    },
+    it: {
+        gameTitle: 'Gioco di Logica',
+        question: 'Domanda',
+        correct: 'Corretto!',
+        incorrect: 'Sbagliato!',
+        score: 'Il Tuo Punteggio',
+        correctAnswers: 'Risposte Corrette',
+        incorrectAnswers: 'Risposte Sbagliate',
+        restartGame: 'Ricomincia Il Gioco',
+        backToDifficulty: 'Torna alla Difficoltà',
+        questions: [
+             { "q": "Se 4 persone possono costruire un muro in 6 ore, quanto tempo ci vuole a 8 persone per costruire lo stesso muro?", "o": ["3 ore", "4 ore", "6 ore"], "a": 0 },
+        { "q": "Un contadino ha 10 galline. Ogni gallina depone un uovo al giorno. Quanti uova depongono le galline in una settimana?", "o": ["70", "60", "50"], "a": 0 },
+        { "q": "Quanti gradi ha un angolo retto?", "o": ["90 gradi", "180 gradi", "360 gradi"], "a": 0 },
+        { "q": "Se hai 15 palle rosse e 10 palle blu, qual è il rapporto tra palle rosse e palle blu?", "o": ["3:2", "2:3", "3:4"], "a": 0 },
+        { "q": "Quanti lati ha un triangolo?", "o": ["3", "4", "6"], "a": 0 },
+        { "q": "Se hai 50 euro e compri qualcosa per 30 euro, quanto ti resta?", "o": ["20 euro", "10 euro", "30 euro"], "a": 0 },
+        { "q": "Qual è la radice quadrata di 81?", "o": ["9", "8", "7"], "a": 0 },
+        { "q": "Se inizi a lavorare alle 9 del mattino e finisci alle 5 del pomeriggio, quante ore hai lavorato?", "o": ["8 ore", "7 ore", "6 ore"], "a": 0 },
+        { "q": "Quanto fa 12 × 5?", "o": ["60", "55", "50"], "a": 0 },
+        { "q": "Che ora è a mezzogiorno?", "o": ["12:00", "24:00", "00:00"], "a": 0 },
+        { "q": "Se hai 3 gruppi di 4 elementi, quanti elementi hai in totale?", "o": ["12", "10", "15"], "a": 0 },
+        { "q": "Qual è la metà di 16?", "o": ["8", "7", "9"], "a": 0 },
+        { "q": "Se hai 5 scatole e ogni scatola contiene 4 libri, quanti libri hai in totale?", "o": ["20", "18", "25"], "a": 0 },
+        { "q": "Quanto fa 5 + 7?", "o": ["12", "13", "14"], "a": 0 },
+        { "q": "Qual è il risultato di 20 - 4?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Se hai 10 palle e ne prendi 3, quante palle ti restano?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Quanti colori ci sono nell'arcobaleno?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Quanto fa 9 ÷ 3?", "o": ["3", "2", "4"], "a": 0 },
+        { "q": "Quanti gradi ha un angolo acuto?", "o": ["Meno di 90 gradi", "90 gradi", "Più di 90 gradi"], "a": 0 },
+        { "q": "Quanti dita hai nelle mani?", "o": ["10", "8", "12"], "a": 0 },
+        { "q": "Qual è la somma di 6 e 9?", "o": ["15", "16", "14"], "a": 0 },
+        { "q": "Se hai 7 mele e 5 arance, quanta frutta hai in totale?", "o": ["12", "11", "10"], "a": 0 },
+        { "q": "Quanto fa 8 × 2?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Qual è la percentuale di 50 su 200?", "o": ["25%", "50%", "75%"], "a": 1 },
+        { "q": "Quanti lati ha un quadrato?", "o": ["4", "3", "6"], "a": 0 },
+        { "q": "Qual è il risultato di 15 - 8?", "o": ["7", "8", "9"], "a": 0 },
+        { "q": "Se hai 4 scatole e ogni scatola contiene 5 palle, quante palle hai in totale?", "o": ["20", "15", "25"], "a": 0 },
+        { "q": "Quanto fa 3 × 6?", "o": ["18", "15", "20"], "a": 0 },
+        { "q": "Se hai 60 euro e ne prendi 25, quanto ti resta?", "o": ["35 euro", "30 euro", "25 euro"], "a": 0 },
+        { "q": "Qual è la radice quadrata di 64?", "o": ["8", "6", "7"], "a": 0 }
+
+
+        ]
+    },
+    pt: {
+        gameTitle: 'Jogo de Lógica',
+        question: 'Pergunta',
+        correct: 'Correto!',
+        incorrect: 'Incorreto!',
+        score: 'Sua Pontuação',
+        correctAnswers: 'Respostas Corretas',
+        incorrectAnswers: 'Respostas Incorretas',
+        restartGame: 'Reiniciar Jogo',
+        backToDifficulty: 'Voltar à Dificuldade',
+        questions: [
+        { "q": "Se 4 pessoas podem construir uma parede em 6 horas, quanto tempo levará para 8 pessoas construírem a mesma parede?", "o": ["3 horas", "4 horas", "6 horas"], "a": 0 },
+        { "q": "Um fazendeiro tem 10 galinhas. Cada galinha põe um ovo por dia. Quantos ovos as galinhas colocarão em uma semana?", "o": ["70 ovos", "60 ovos", "50 ovos"], "a": 0 },
+        { "q": "Quantos graus tem um ângulo reto?", "o": ["90 graus", "180 graus", "360 graus"], "a": 0 },
+        { "q": "Se você tem 15 bolas vermelhas e 10 bolas azuis, qual é a proporção entre bolas vermelhas e bolas azuis?", "o": ["3:2", "2:3", "3:4"], "a": 0 },
+        { "q": "Quantos lados tem um triângulo?", "o": ["3", "4", "6"], "a": 0 },
+        { "q": "Se você tem 50 dólares e compra algo por 30 dólares, quanto dinheiro você ainda tem?", "o": ["20 dólares", "10 dólares", "30 dólares"], "a": 0 },
+        { "q": "Qual é a raiz quadrada de 81?", "o": ["9", "8", "7"], "a": 0 },
+        { "q": "Se você começa a trabalhar às 9 da manhã e termina às 5 da tarde, quantas horas você trabalhou?", "o": ["8 horas", "7 horas", "6 horas"], "a": 0 },
+        { "q": "12 × 5 é igual a quanto?", "o": ["60", "55", "50"], "a": 0 },
+        { "q": "Qual é a hora quando o relógio marca o meio-dia?", "o": ["12:00", "24:00", "00:00"], "a": 0 },
+        { "q": "Se você tem 3 grupos, e cada grupo tem 4 elementos, quantos elementos você tem no total?", "o": ["12", "10", "15"], "a": 0 },
+        { "q": "Qual é a metade de 16?", "o": ["8", "7", "9"], "a": 0 },
+        { "q": "Se você tem 5 caixas e cada caixa contém 4 livros, quantos livros você tem no total?", "o": ["20", "18", "25"], "a": 0 },
+        { "q": "5 + 7 é igual a quanto?", "o": ["12", "13", "14"], "a": 0 },
+        { "q": "Qual é o resultado de 20 - 4?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Se você tem 10 bolas e tira 3 bolas, quantas bolas restam?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Quantas cores há no arco-íris?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Quanto é 9 ÷ 3?", "o": ["3", "2", "4"], "a": 0 },
+        { "q": "Quantos graus tem um ângulo agudo?", "o": ["Menos de 90 graus", "90 graus", "Mais de 90 graus"], "a": 0 },
+        { "q": "Quantos dedos há nas duas mãos?", "o": ["10", "8", "12"], "a": 0 },
+        { "q": "Qual é a soma de 6 e 9?", "o": ["15", "16", "14"], "a": 0 },
+        { "q": "Se você tem 7 maçãs e 5 laranjas, quantas frutas você tem no total?", "o": ["12", "11", "10"], "a": 0 },
+        { "q": "Quanto é 8 × 2?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Qual é a porcentagem de 200 que é 50?", "o": ["25%", "50%", "75%"], "a": 1 },
+        { "q": "Quantos lados tem um quadrado?", "o": ["4", "3", "6"], "a": 0 },
+        { "q": "Qual é o resultado de 15 - 8?", "o": ["7", "8", "9"], "a": 0 },
+        { "q": "Se você tem 4 caixas e cada caixa tem 5 bolas, quantas bolas você tem no total?", "o": ["20", "15", "25"], "a": 0 },
+        { "q": "Quanto é 3 × 6?", "o": ["18", "15", "20"], "a": 0 },
+        { "q": "Se você tem 60 reais e gasta 25 reais, quanto resta?", "o": ["35 reais", "30 reais", "25 reais"], "a": 0 },
+        { "q": "Qual é a raiz quadrada de 64?", "o": ["8", "6", "7"], "a": 0 }
+        ]
+    },
+    ru: {
+        gameTitle: 'Логическая Игра',
+        question: 'Вопрос',
+        correct: 'Правильно!',
+        incorrect: 'Неправильно!',
+        score: 'Ваш Балл',
+        correctAnswers: 'Правильные Ответы',
+        incorrectAnswers: 'Неправильные Ответы',
+        restartGame: 'Начать Заново',
+        backToDifficulty: 'Назад к Уровню Сложности',
+        questions: [
+        { "q": "Если 4 человека могут построить стену за 6 часов, сколько времени потребуется 8 человекам для постройки той же стены?", "o": ["3 часа", "4 часа", "6 часов"], "a": 0 },
+        { "q": "Фермер имеет 10 кур. Каждая курица откладывает одно яйцо в день. Сколько яиц курицы отложат за неделю?", "o": ["70", "60", "50"], "a": 0 },
+        { "q": "Сколько градусов в прямом угле?", "o": ["90 градусов", "180 градусов", "360 градусов"], "a": 0 },
+        { "q": "Если у вас есть 15 красных шаров и 10 синих шаров, каково соотношение красных шаров к синим шарам?", "o": ["3:2", "2:3", "3:4"], "a": 0 },
+        { "q": "Сколько сторон у треугольника?", "o": ["3", "4", "6"], "a": 0 },
+        { "q": "Если у вас 50 долларов и вы купили что-то за 30 долларов, сколько у вас осталось?", "o": ["20 долларов", "10 долларов", "30 долларов"], "a": 0 },
+        { "q": "Какой квадратный корень из 81?", "o": ["9", "8", "7"], "a": 0 },
+        { "q": "Если вы начали работать в 9 утра и закончите в 5 вечера, сколько часов вы проработали?", "o": ["8 часов", "7 часов", "6 часов"], "a": 0 },
+        { "q": "Сколько будет 12 × 5?", "o": ["60", "55", "50"], "a": 0 },
+        { "q": "Который час в полдень?", "o": ["12:00", "24:00", "00:00"], "a": 0 },
+        { "q": "Если у вас 3 группы по 4 элемента, сколько у вас всего элементов?", "o": ["12", "10", "15"], "a": 0 },
+        { "q": "Какова половина от 16?", "o": ["8", "7", "9"], "a": 0 },
+        { "q": "Если у вас 5 коробок, и в каждой коробке по 4 книги, сколько книг у вас всего?", "o": ["20", "18", "25"], "a": 0 },
+        { "q": "Сколько будет 5 + 7?", "o": ["12", "13", "14"], "a": 0 },
+        { "q": "Каков результат 20 - 4?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Если у вас 10 шаров и вы взяли 3 шара, сколько у вас осталось?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Сколько цветов в радуге?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "Сколько будет 9 ÷ 3?", "o": ["3", "2", "4"], "a": 0 },
+        { "q": "Сколько градусов в остром угле?", "o": ["Меньше 90 градусов", "90 градусов", "Больше 90 градусов"], "a": 0 },
+        { "q": "Сколько пальцев на обеих руках?", "o": ["10", "8", "12"], "a": 0 },
+        { "q": "Какова сумма 6 и 9?", "o": ["15", "16", "14"], "a": 0 },
+        { "q": "Если у вас 7 яблок и 5 апельсинов, сколько всего фруктов у вас есть?", "o": ["12", "11", "10"], "a": 0 },
+        { "q": "Сколько будет 8 × 2?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "Какой процент от 200 составляет 50?", "o": ["25%", "50%", "75%"], "a": 1 },
+        { "q": "Сколько сторон у квадрата?", "o": ["4", "3", "6"], "a": 0 },
+        { "q": "Каков результат 15 - 8?", "o": ["7", "8", "9"], "a": 0 },
+        { "q": "Если у вас 4 коробки, и в каждой коробке по 5 шаров, сколько всего шаров у вас есть?", "o": ["20", "15", "25"], "a": 0 },
+        { "q": "Сколько будет 3 × 6?", "o": ["18", "15", "20"], "a": 0 },
+        { "q": "Если у вас 60 рублей и вы потратили 25 рублей, сколько у вас осталось?", "o": ["35 рублей", "30 рублей", "25 рублей"], "a": 0 },
+        { "q": "Какой квадратный корень из 64?", "o": ["8", "6", "7"], "a": 0 }
+        ]
+    },
+    zh: {
+        gameTitle: '逻辑游戏',
+        question: '问题',
+        correct: '正确！',
+        incorrect: '错误！',
+        score: '你的分数',
+        correctAnswers: '正确回答',
+        incorrectAnswers: '错误回答',
+        restartGame: '重新开始',
+        backToDifficulty: '返回难度选择',
+        questions: [
+   { "q": "如果4个人可以在6小时内建造一面墙，那么8个人建造同样的墙需要多久？", "o": ["3小时", "4小时", "6小时"], "a": 0 },
+        { "q": "一个农民有10只鸡，每只鸡每天下一个蛋。鸡在一周内能下多少个蛋？", "o": ["70个", "60个", "50个"], "a": 0 },
+        { "q": "直角有多少度？", "o": ["90度", "180度", "360度"], "a": 0 },
+        { "q": "如果你有15个红球和10个蓝球，红球与蓝球的比例是多少？", "o": ["3:2", "2:3", "3:4"], "a": 0 },
+        { "q": "三角形有多少条边？", "o": ["3", "4", "6"], "a": 0 },
+        { "q": "如果你有50美元，买了一样东西花了30美元，你还剩多少钱？", "o": ["20美元", "10美元", "30美元"], "a": 0 },
+        { "q": "81的平方根是多少？", "o": ["9", "8", "7"], "a": 0 },
+        { "q": "如果你早上9点开始工作，下午5点结束工作，你工作了多少小时？", "o": ["8小时", "7小时", "6小时"], "a": 0 },
+        { "q": "12 × 5 等于多少？", "o": ["60", "55", "50"], "a": 0 },
+        { "q": "中午时钟指向什么时间？", "o": ["12:00", "24:00", "00:00"], "a": 0 },
+        { "q": "如果你有3组，每组4个元素，你总共有多少个元素？", "o": ["12", "10", "15"], "a": 0 },
+        { "q": "16的一半是多少？", "o": ["8", "7", "9"], "a": 0 },
+        { "q": "如果你有5个盒子，每个盒子里有4本书，总共有多少本书？", "o": ["20", "18", "25"], "a": 0 },
+        { "q": "5 + 7 等于多少？", "o": ["12", "13", "14"], "a": 0 },
+        { "q": "20 - 4 的结果是多少？", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "如果你有10个球，拿走3个，还剩多少个？", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "彩虹有多少种颜色？", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "9 ÷ 3 等于多少？", "o": ["3", "2", "4"], "a": 0 },
+        { "q": "锐角有多少度？", "o": ["小于90度", "90度", "大于90度"], "a": 0 },
+        { "q": "两只手总共有多少个手指？", "o": ["10个", "8个", "12个"], "a": 0 },
+        { "q": "6 和 9 的和是多少？", "o": ["15", "16", "14"], "a": 0 },
+        { "q": "如果你有7个苹果和5个橙子，总共有多少个水果？", "o": ["12", "11", "10"], "a": 0 },
+        { "q": "8 × 2 等于多少？", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "50占200的百分比是多少？", "o": ["25%", "50%", "75%"], "a": 1 },
+        { "q": "正方形有多少条边？", "o": ["4", "3", "6"], "a": 0 },
+        { "q": "15 - 8 的结果是多少？", "o": ["7", "8", "9"], "a": 0 },
+        { "q": "如果你有4个盒子，每个盒子里有5个球，总共有多少个球？", "o": ["20", "15", "25"], "a": 0 },
+        { "q": "3 × 6 等于多少？", "o": ["18", "15", "20"], "a": 0 },
+        { "q": "如果你有60元，花了25元，你还剩多少元？", "o": ["35元", "30元", "25元"], "a": 0 },
+        { "q": "64的平方根是多少？", "o": ["8", "6", "7"], "a": 0 }
+        ]
+    },
+    ja: {
+        gameTitle: '論理ゲーム',
+        question: '質問',
+        correct: '正解！',
+        incorrect: '不正解！',
+        score: 'あなたのスコア',
+        correctAnswers: '正しい回答',
+        incorrectAnswers: '間違った回答',
+        restartGame: 'ゲームを再起動',
+        backToDifficulty: '難易度に戻る',
+        questions: [
+       {
+    "gameTitle": "論理ゲーム",
+    "question": "質問",
+    "correct": "正解！",
+    "incorrect": "不正解！",
+    "score": "スコア",
+    "correctAnswers": "正解数",
+    "incorrectAnswers": "不正解数",
+    "restartGame": "ゲームを再スタート",
+    "backToDifficulty": "難易度に戻る",
+    "questions": [
+        { "q": "4人で6時間で壁を作れる場合、8人で同じ壁を作るのにどのくらいの時間がかかりますか？", "o": ["3時間", "4時間", "6時間"], "a": 0 },
+        { "q": "農場主が10羽の鶏を持っています。それぞれの鶏が1日に1個の卵を産むとき、1週間で何個の卵が産まれますか？", "o": ["70個", "60個", "50個"], "a": 0 },
+        { "q": "次の数列で欠けている数は何ですか？: 2, 5, 10, 17", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "箱に5個の赤いボールと3個の緑のボールが入っています。ランダムに赤いボールを引く確率はどれくらいですか？", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "列車が14:00に出発し、18:15に到着します。旅行時間はどのくらいですか？", "o": ["4時間15分", "4時間45分", "4時間30分"], "a": 0 },
+        { "q": "長さ10単位、幅5単位の長方形の面積はどのくらいですか？", "o": ["30平方単位", "50平方単位", "60平方単位"], "a": 1 },
+        { "q": "クラスの60%が女子です。クラスには30人の生徒がいます。男子は何人いますか？", "o": ["10人", "12人", "18人"], "a": 2 },
+        { "q": "1冊の本に200ページあります。毎日25ページ読むと、何日で本を読み終えますか？", "o": ["7日", "8日", "9日"], "a": 1 },
+        { "q": "ある数に8を加え、その結果を4で割ると7になります。元の数は何ですか？", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "12 + (8 × 2) - 6 の結果は何ですか？", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "箱に3個の赤いボール、2個の緑のボール、5個の青いボールが入っています。赤いボールの割合はどれくらいですか？", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "1に1を加え、それを2で掛けると結果は何ですか？", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "時計が15:15を示しているとき、時針と分針の間の角度は何度ですか？", "o": ["30度", "37.5度", "45度"], "a": 1 },
+        { "q": "50ピースのパズルから1ピースが欠けているとき、いくつのピースが残っていますか？", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "三角形の2つの角がそれぞれ45度であるとき、3番目の角度は何度ですか？", "o": ["90度", "45度", "60度"], "a": 0 },
+        { "q": "12人のグループで、8人が女性の場合、男性は何人いますか？", "o": ["4人", "5人", "6人"], "a": 0 },
+        { "q": "箱に10個の赤いボールと20個の青いボールがあります。赤いボールと青いボールの比率はどれくらいですか？", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "サイコロを振ったとき、4より大きい数が出る確率はどれくらいですか？", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "50に10を加え、その結果を5で割ると、結果は何ですか？", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "7と8の積は何ですか？", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "三角形の角度の合計は何度ですか？", "o": ["180度", "360度", "90度"], "a": 0 },
+        { "q": "長さ8単位、幅3単位の長方形の周囲はどれくらいですか？", "o": ["22単位", "24単位", "18単位"], "a": 0 },
+        { "q": "60 km/hで走る列車が180 kmを移動するのにどれくらいの時間がかかりますか？", "o": ["2時間", "3時間", "4時間"], "a": 1 },
+        { "q": "9の平方は何ですか？", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "100から45を引いた差は何ですか？", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "72を8で割ると、結果は何ですか？", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "144を12で割った商は何ですか？", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "20 - (5 × 3) の結果は何ですか？", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "8等分されたピザがあり、3つ食べた場合、残りはいくつですか？", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "7に6を加え、4を引いた結果は何ですか？", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "5と6の積は何ですか？", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "14と9の合計は何ですか？", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "30から8を引いた結果は何ですか？", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "15 ÷ 3 の結果は何ですか？", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "11と5の合計は何ですか？", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "7に18を加え、9を引いた結果は何ですか？", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "4と7の積は何ですか？", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "18 - (2 × 4) の結果は何ですか？", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "3つの5個のアイテムがあるとき、全部でいくつのアイテムがありますか？", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "3日間で何時間ありますか？", "o": ["72時間", "48時間", "24時間"], "a": 0 }
+    ]
+}
+
+        ]
+    },
+    ko: {
+        gameTitle: '논리 게임',
+        question: '질문',
+        correct: '정답입니다!',
+        incorrect: '오답입니다!',
+        score: '당신의 점수',
+        correctAnswers: '정답 개수',
+        incorrectAnswers: '오답 개수',
+        restartGame: '게임 재시작',
+        backToDifficulty: '난이도로 돌아가기',
+        questions: [
+   { "q": "4명이 6시간 안에 벽을 세울 수 있다면, 8명이 같은 벽을 세우는 데 얼마나 걸릴까요?", "o": ["3시간", "4시간", "6시간"], "a": 0 },
+        { "q": "농부가 10마리의 닭을 가지고 있습니다. 각 닭은 하루에 하나의 알을 낳습니다. 닭들이 일주일 동안 낳는 알의 총 개수는 얼마일까요?", "o": ["70개", "60개", "50개"], "a": 0 },
+        { "q": "직각은 몇 도일까요?", "o": ["90도", "180도", "360도"], "a": 0 },
+        { "q": "15개의 빨간 공과 10개의 파란 공이 있다면, 빨간 공과 파란 공의 비율은 얼마인가요?", "o": ["3:2", "2:3", "3:4"], "a": 0 },
+        { "q": "삼각형에는 몇 개의 변이 있나요?", "o": ["3", "4", "6"], "a": 0 },
+        { "q": "50달러를 가지고 있고 30달러짜리 물건을 샀다면, 남은 돈은 얼마일까요?", "o": ["20달러", "10달러", "30달러"], "a": 0 },
+        { "q": "81의 제곱근은 얼마인가요?", "o": ["9", "8", "7"], "a": 0 },
+        { "q": "오전 9시에 일을 시작하고 오후 5시에 일을 끝낸다면, 총 몇 시간 일했나요?", "o": ["8시간", "7시간", "6시간"], "a": 0 },
+        { "q": "12 × 5는 얼마인가요?", "o": ["60", "55", "50"], "a": 0 },
+        { "q": "정오에 시계는 몇 시를 가리키나요?", "o": ["12:00", "24:00", "00:00"], "a": 0 },
+        { "q": "3개의 그룹이 있고, 각 그룹에 4개의 요소가 있다면, 총 몇 개의 요소가 있나요?", "o": ["12", "10", "15"], "a": 0 },
+        { "q": "16의 절반은 얼마인가요?", "o": ["8", "7", "9"], "a": 0 },
+        { "q": "5개의 상자가 있고, 각 상자에 4개의 책이 있다면, 총 몇 권의 책이 있나요?", "o": ["20", "18", "25"], "a": 0 },
+        { "q": "5 + 7은 얼마인가요?", "o": ["12", "13", "14"], "a": 0 },
+        { "q": "20 - 4의 결과는 얼마인가요?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "10개의 공이 있고 3개의 공을 꺼내면, 몇 개의 공이 남나요?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "무지개에는 몇 가지 색깔이 있나요?", "o": ["7", "6", "8"], "a": 0 },
+        { "q": "9 ÷ 3은 얼마인가요?", "o": ["3", "2", "4"], "a": 0 },
+        { "q": "예각은 몇 도인가요?", "o": ["90도 미만", "90도", "90도 초과"], "a": 0 },
+        { "q": "양 손에는 몇 개의 손가락이 있나요?", "o": ["10개", "8개", "12개"], "a": 0 },
+        { "q": "6과 9의 합은 얼마인가요?", "o": ["15", "16", "14"], "a": 0 },
+        { "q": "사과 7개와 오렌지 5개가 있다면, 총 몇 개의 과일이 있나요?", "o": ["12", "11", "10"], "a": 0 },
+        { "q": "8 × 2는 얼마인가요?", "o": ["16", "14", "18"], "a": 0 },
+        { "q": "200의 50%는 얼마인가요?", "o": ["25%", "50%", "75%"], "a": 1 },
+        { "q": "정사각형에는 몇 개의 변이 있나요?", "o": ["4", "3", "6"], "a": 0 },
+        { "q": "15 - 8의 결과는 얼마인가요?", "o": ["7", "8", "9"], "a": 0 },
+        { "q": "4개의 상자가 있고 각 상자에 5개의 공이 있다면, 총 몇 개의 공이 있나요?", "o": ["20", "15", "25"], "a": 0 },
+        { "q": "3 × 6은 얼마인가요?", "o": ["18", "15", "20"], "a": 0 },
+        { "q": "60원을 가지고 있고 25원을 썼다면, 얼마가 남나요?", "o": ["35원", "30원", "25원"], "a": 0 },
+        { "q": "64의 제곱근은 얼마인가요?", "o": ["8", "6", "7"], "a": 0 }
+        ]
+    },
+    ar: {
+        gameTitle: 'لعبة المنطق',
+        question: 'سؤال',
+        correct: 'صحيح!',
+        incorrect: 'خطأ!',
+        score: 'نتيجتك',
+        correctAnswers: 'الإجابات الصحيحة',
+        incorrectAnswers: 'الإجابات الخاطئة',
+        restartGame: 'إعادة تشغيل اللعبة',
+        backToDifficulty: 'العودة إلى مستوى الصعوبة',
+        questions: [
+        { "q": "إذا كان 4 أشخاص يمكنهم بناء جدار في 6 ساعات، فكم من الوقت ستستغرقه 8 أشخاص لبناء نفس الجدار، بافتراض أنهم يعملون بنفس السرعة؟", "o": ["3 ساعات", "4 ساعات", "6 ساعات"], "a": 0 },
+        { "q": "يمتلك مزارع 10 دجاجات. كل دجاجة تضع 1 بيضة في اليوم. كم عدد البيضات التي ستضعها الدجاجات في أسبوع واحد؟", "o": ["70 بيضة", "60 بيضة", "50 بيضة"], "a": 0 },
+        { "q": "ما هو الرقم المفقود في التسلسل التالي: 2، 5، 10، 17؟", "o": ["26", "28", "30"], "a": 0 },
+        { "q": "إذا كانت علبة تحتوي على 5 كرات حمراء و 3 كرات خضراء، ما هي احتمالية سحب كرة حمراء بشكل عشوائي؟", "o": ["5/8", "3/8", "1/2"], "a": 0 },
+        { "q": "ينطلق قطار في الساعة 2:00 PM ويصل في الساعة 6:15 PM. ما هي مدة الرحلة؟", "o": ["4 ساعات و 15 دقيقة", "4 ساعات و 45 دقيقة", "4 ساعات و 30 دقيقة"], "a": 0 },
+        { "q": "إذا كان مستطيل بطول 10 وحدات وعرض 5 وحدات، ما هي مساحة المستطيل؟", "o": ["30 وحدة مربعة", "50 وحدة مربعة", "60 وحدة مربعة"], "a": 1 },
+        { "q": "في فصل دراسي، 60% من الطلاب إناث. إذا كان الفصل يحتوي على 30 طالبًا، كم عدد الذكور؟", "o": ["10", "12", "18"], "a": 2 },
+        { "q": "كتاب يحتوي على 200 صفحة. إذا قرأت 25 صفحة كل يوم، كم عدد الأيام التي ستستغرقها لقراءة الكتاب؟", "o": ["7 أيام", "8 أيام", "9 أيام"], "a": 1 },
+        { "q": "إذا أضفت 8 إلى رقم ما وقسمت الناتج على 4، ستحصل على 7. ما هو الرقم الأصلي؟", "o": ["20", "28", "12"], "a": 2 },
+        { "q": "ما هو ناتج 12 + (8 × 2) - 6؟", "o": ["20", "22", "24"], "a": 1 },
+        { "q": "إذا كانت علبة تحتوي على 3 كرات حمراء، و 2 كرات خضراء و 5 كرات زرقاء، ما هي الكسر الذي يمثل الكرات الحمراء؟", "o": ["3/10", "3/8", "1/3"], "a": 0 },
+        { "q": "إذا أضفت 1 إلى 1 ثم ضربت الناتج في 2، ما هو الناتج؟", "o": ["2", "4", "6"], "a": 1 },
+        { "q": "إذا كانت الساعة تُظهر 3:15، ما هو الزاوية بين عقرب الساعات والدقائق؟", "o": ["30 درجة", "37.5 درجة", "45 درجة"], "a": 1 },
+        { "q": "إذا كانت قطعة من الألغاز مفقودة من لغز يحتوي على 50 قطعة، كم قطعة تبقى؟", "o": ["49", "50", "51"], "a": 0 },
+        { "q": "إذا كان مثلث يحتوي على زاويتين كل منهما 45 درجة، ما هي زاوية الزاوية الثالثة؟", "o": ["90 درجة", "45 درجة", "60 درجة"], "a": 0 },
+        { "q": "في مجموعة من 12 شخصًا، إذا كان 8 منهم نساء، كم عدد الرجال؟", "o": ["4", "5", "6"], "a": 0 },
+        { "q": "إذا كانت علبة تحتوي على 10 كرات حمراء و 20 كرة زرقاء. ما هي نسبة الكرات الحمراء إلى الكرات الزرقاء؟", "o": ["1:2", "2:3", "1:3"], "a": 0 },
+        { "q": "إذا رميت نردًا مكونًا من ستة أوجه، ما هي احتمالية الحصول على رقم أكبر من 4؟", "o": ["1/6", "1/3", "1/2"], "a": 1 },
+        { "q": "إذا أضفت 10 إلى 50 وقسمت الناتج على 5، ما هو الناتج؟", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "ما هو ناتج ضرب 7 في 8؟", "o": ["56", "48", "64"], "a": 0 },
+        { "q": "ما هي مجموع الزوايا في مثلث؟", "o": ["180 درجة", "360 درجة", "90 درجة"], "a": 0 },
+        { "q": "إذا كان مستطيل بطول 8 وحدات وعرض 3 وحدات، ما هو محيطه؟", "o": ["22 وحدة", "24 وحدة", "18 وحدة"], "a": 0 },
+        { "q": "إذا كان قطار يسير بسرعة 60 كم/ساعة، كم من الوقت سيستغرقه لقطع 180 كم؟", "o": ["2 ساعات", "3 ساعات", "4 ساعات"], "a": 1 },
+        { "q": "ما هو مربع 9؟", "o": ["81", "72", "90"], "a": 0 },
+        { "q": "ما هي الفرق بين 100 و 45؟", "o": ["55", "65", "75"], "a": 0 },
+        { "q": "إذا قسمت 72 على 8، ما هو الناتج؟", "o": ["9", "8", "10"], "a": 0 },
+        { "q": "ما هو ناتج قسمة 144 على 12؟", "o": ["12", "14", "10"], "a": 0 },
+        { "q": "ما هو ناتج 20 - (5 × 3)؟", "o": ["5", "10", "15"], "a": 0 },
+        { "q": "إذا تم قطع بيتزا إلى 8 شرائح متساوية وأكلت 3 منها، كم عدد الشرائح المتبقية؟", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "إذا أضفت 6 إلى 7 ثم طرحت 4، ما هو الناتج؟", "o": ["9", "8", "7"], "a": 1 },
+        { "q": "ما هو ناتج ضرب 5 في 6؟", "o": ["30", "28", "35"], "a": 0 },
+        { "q": "ما هي مجموع 14 و 9؟", "o": ["23", "22", "24"], "a": 0 },
+        { "q": "إذا طرحت 8 من 30، ما هو الناتج؟", "o": ["22", "20", "18"], "a": 0 },
+        { "q": "ما هو ناتج 15 ÷ 3؟", "o": ["5", "6", "4"], "a": 0 },
+        { "q": "ما هي مجموع 11 و 5؟", "o": ["16", "17", "15"], "a": 0 },
+        { "q": "إذا أضفت 7 إلى 18 ثم طرحت 9، ما هو الناتج؟", "o": ["16", "15", "17"], "a": 0 },
+        { "q": "ما هو ناتج ضرب 4 في 7؟", "o": ["28", "30", "32"], "a": 0 },
+        { "q": "ما هو ناتج 18 - (2 × 4)؟", "o": ["10", "12", "8"], "a": 0 },
+        { "q": "إذا كان لديك 3 مجموعات من 5 عناصر، كم عدد العناصر لديك إجمالاً؟", "o": ["15", "12", "10"], "a": 0 },
+        { "q": "كم ساعة هناك في 3 أيام؟", "o": ["72 ساعة", "48 ساعة", "24 ساعة"], "a": 0 }
+        ]
+    }
+};
+
+
+
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        const totalQuestions = 30; // Adjust according to the number of questions
+
+        function startGame() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questions = translations[lang].questions;
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('gameTitle').innerText = translations[lang].gameTitle;
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const lang = localStorage.getItem('language') || 'en';
+            const questionData = translations[lang].questions[currentQuestionIndex];
+            if (!questionData) {
+                showScore();
+                return;
+            }
+            document.getElementById('question').innerText = questionData.q;
+            document.getElementById('options').innerHTML = questionData.o.map((option, index) => 
+                `<button onclick="selectAnswer(${index})">${option}</button>`
+            ).join('');
+            document.getElementById('feedback').innerText = '';
+        }
+
+      function selectAnswer(index) {
+    const lang = localStorage.getItem('language') || 'en';
+    const questionData = translations[lang].questions[currentQuestionIndex];
+    if (index === questionData.a) {
+        document.getElementById('feedback').innerText = translations[lang].correct;
+        document.getElementById('feedback').className = 'feedback-correct'; // Applique la classe correcte
+        correctAnswers++;
+        showConfetti();
+    } else {
+        document.getElementById('feedback').innerText = translations[lang].incorrect;
+        document.getElementById('feedback').className = 'feedback-incorrect'; // Applique la classe incorrecte
+        incorrectAnswers++;
+        shakeScreen();
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < totalQuestions) {
+        setTimeout(displayQuestion, 1000); // Delay to show feedback before moving to the next question
+    } else {
+        setTimeout(showScore, 1000); // Delay to show feedback before showing the score
+    }
+}
+
+
+        function showScore() {
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('score-container').style.display = 'block';
+            const lang = localStorage.getItem('language') || 'en';
+            document.getElementById('score-text').innerText = `${translations[lang].score}: ${correctAnswers}`;
+            document.getElementById('correct-answers-text').innerText = `${translations[lang].correctAnswers}: ${correctAnswers}`;
+            document.getElementById('incorrect-answers-text').innerText = `${translations[lang].incorrectAnswers}: ${incorrectAnswers}`;
+			   document.getElementById('back-to-difficulty').innerText = translations[lang].backToDifficulty; // Met à jour le texte du bouton
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            document.getElementById('score-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            displayQuestion();
+        }
+
+        function showConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function shakeScreen() {
+            const body = document.body;
+            body.classList.add('shake');
+            setTimeout(() => body.classList.remove('shake'), 500); // Duration of shake effect
+        }
+
+       
+	
+
+        // Set the language to English by default
+        localStorage.setItem('language', localStorage.getItem('language') || 'en');
+        startGame();
+		
+		
+    </script>
+</body>
+</html>

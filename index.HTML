@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Language</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #a2c2e2, #cfe2f3);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .logo {
+            width: 50px; /* Adjust the size as needed */
+            margin-bottom: 10px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .buttons button:active {
+            background-color: #004494;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.png" alt="Logo" class="logo"> <!-- Add your logo here -->
+        <h1 id="header"></h1>
+        <div class="buttons">
+            <button onclick="selectLanguage('en')">English</button>
+            <button onclick="selectLanguage('fr')">Français</button>
+            <button onclick="selectLanguage('es')">Español</button>
+            <button onclick="selectLanguage('de')">Deutsch</button>
+            <button onclick="selectLanguage('it')">Italiano</button>
+            <button onclick="selectLanguage('pt')">Português</button>
+            <button onclick="selectLanguage('ru')">Русский</button>
+            <button onclick="selectLanguage('zh')">中文</button>
+            <button onclick="selectLanguage('ja')">日本語</button>
+            <button onclick="selectLanguage('ar')">العربية</button>
+        </div>
+    </div>
+    <script>
+        const translations = {
+            en: { header: 'Choose Your Language' },
+            fr: { header: 'Choisissez votre langue' },
+            es: { header: 'Elige tu idioma' },
+            de: { header: 'Wählen Sie Ihre Sprache' },
+            it: { header: 'Scegli la tua lingua' },
+            pt: { header: 'Escolha o seu idioma' },
+            ru: { header: 'Выберите язык' },
+            zh: { header: '选择你的语言' },
+            ja: { header: '言語を選択してください' },
+            ar: { header: 'اختر لغتك' }
+        };
+
+        function selectLanguage(lang) {
+            localStorage.setItem('language', lang);
+            window.location.href = 'difficulty.html';
+        }
+
+        const lang = localStorage.getItem('language') || 'en';
+        document.getElementById('header').innerText = translations[lang].header;
+    </script>
+</body>
+</html>

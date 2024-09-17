@@ -1,0 +1,69 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #d0e4f8, #c9d6ff); /* Doux dégradé bleu clair */
+    color: #333; /* Texte sombre pour un bon contraste */
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* Fond blanc avec opacité légère */
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre douce */
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #2c3e50; /* Couleur sombre pour le texte */
+}
+
+button {
+    background: #3498db; /* Bleu vif pour le bouton */
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+    outline: none;
+}
+
+button:hover {
+    background: #2980b9; /* Bleu plus foncé sur hover */
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+button:focus {
+    box-shadow: 0 0 5px 2px #3498db; /* Outline lors du focus */
+}
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+.feedback-correct {
+    color: green;
+    font-weight: bold;
+}
+
+.feedback-incorrect {
+    color: red;
+    font-weight: bold;
+}
+
